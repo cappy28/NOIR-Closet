@@ -1034,12 +1034,21 @@ document.addEventListener("click", event => {
   }
 });
 
+let searchFrame = 0;
+
 document.addEventListener("input", event => {
-  if (event.target.id === "closetSearch") {
-    state.search = event.target.value;
+  if (event.target.id !== "closetSearch") return;
+
+  const value = event.target.value;
+
+  cancelAnimationFrame(searchFrame);
+
+  searchFrame = requestAnimationFrame(() => {
+    state.search = value;
     renderClosetGrid();
-  }
+  });
 });
+
 
 document.addEventListener("change", event => {
   if (event.target.id === "categoryFilter") {
