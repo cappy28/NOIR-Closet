@@ -1,0 +1,229 @@
+export const products = [
+  {
+    id: "001",
+    name: "Pantalon noir à taille élastique",
+    brand: "Uniqlo",
+    size: "XS",
+    price: 29.90,
+    category: "bottom",
+    image: "./assets/images/products/001-uniqlo-pantalon-noir.png",
+    colors: ["#080808", "#303132"],
+    styles: ["minimaliste", "casual", "streetwear"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "002",
+    name: "Jean denim bleu clair",
+    brand: "Jack & Jones",
+    size: "34",
+    price: 49.99,
+    category: "bottom",
+    image: "./assets/images/products/002-jack-jones-jean-bleu-clair.png",
+    colors: ["#91AEC0", "#D6E4EA"],
+    styles: ["casual", "streetwear", "minimaliste"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "003",
+    name: "Jean denim bleu",
+    brand: "Jack & Jones",
+    size: "34",
+    price: 49.99,
+    category: "bottom",
+    image: "./assets/images/products/003-jack-jones-jean-bleu-2.png",
+    colors: ["#4F7898", "#8EABC0"],
+    styles: ["casual", "streetwear", "minimaliste"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "004",
+    name: "Hoodie Touché",
+    brand: "Bershka",
+    size: "XS",
+    price: 32.99,
+    category: "top",
+    image: "./assets/images/products/004-bershka-hoodie-touche.png",
+    colors: ["#080808", "#D8D6A6"],
+    styles: ["streetwear", "graphique", "monochrome"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "005",
+    name: "Pull rose et noir",
+    brand: "Bershka",
+    size: "XS",
+    price: 39.99,
+    category: "top",
+    image: "./assets/images/products/005-bershka-pull-rose-noir.png",
+    colors: ["#E7A8B9", "#101010"],
+    styles: ["graphique", "streetwear", "statement"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "006",
+    name: "Lot de 3 boxers Nike",
+    brand: "Nike",
+    size: "S",
+    price: 29.99,
+    category: "underwear",
+    image: "./assets/images/products/006-nike-boxers-lot-3.png",
+    colors: ["#080808", "#F2F2F2"],
+    styles: ["sport", "minimaliste"],
+    includeInOutfits: false,
+    quantity: 3
+  },
+
+  {
+    id: "007",
+    name: "Sneakers Nike noir et argent",
+    brand: "Nike",
+    size: "43",
+    price: 80.00,
+    category: "shoes",
+    image: "./assets/images/products/007-nike-sneakers.png",
+    colors: ["#090A0B", "#B9BEC1"],
+    styles: ["streetwear", "sport", "techwear"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "008",
+    name: "Jean noir délavé",
+    brand: "Bershka",
+    size: "36",
+    price: 19.99,
+    originalPrice: 39.99,
+    category: "bottom",
+    image: "./assets/images/products/008-bershka-jean-noir-delave.png",
+    colors: ["#17191A", "#5A5C5D"],
+    styles: ["streetwear", "casual", "monochrome", "grunge"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "009",
+    name: "Doudoune noire brillante",
+    brand: "Bershka",
+    size: "S",
+    price: 34.99,
+    originalPrice: 69.99,
+    category: "jacket",
+    image: "./assets/images/products/009-bershka-doudoune-noire.png",
+    colors: ["#030303", "#BFC1C2"],
+    styles: ["streetwear", "techwear", "futuriste", "hiver"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "010",
+    name: "Hoodie zippé camouflage",
+    brand: "Bershka",
+    size: "S",
+    price: 19.99,
+    originalPrice: 39.99,
+    category: "top",
+    image: "./assets/images/products/010-bershka-hoodie-camouflage.png",
+    colors: ["#4A3028", "#4B513A"],
+    styles: ["streetwear", "militaire", "casual"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "011",
+    name: "Pantalon cargo camouflage",
+    brand: "Bershka",
+    size: "S",
+    price: 39.99,
+    category: "bottom",
+    image: "./assets/images/products/011-bershka-cargo-camouflage.png",
+    colors: ["#596044", "#C6B887"],
+    styles: ["streetwear", "militaire", "utility"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "012",
+    name: "T-shirt blanc col V",
+    brand: "Zeeman",
+    size: "S",
+    price: 3.79,
+    category: "top",
+    image: "./assets/images/products/012-zeeman-tshirt-blanc.png",
+    colors: ["#FFFFFF", "#B9BBB8"],
+    styles: ["basique", "minimaliste", "casual"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "013",
+    name: "T-shirt Zeeman",
+    brand: "Zeeman",
+    size: "S",
+    price: 3.79,
+    category: "top",
+    image: "./assets/images/products/013-zeeman-tshirt-2.png",
+    colors: ["#FFFFFF", "#777A78"],
+    styles: ["basique", "minimaliste", "casual"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "014",
+    name: "Gants de running",
+    brand: "Kiprun",
+    size: "S",
+    price: 8.99,
+    category: "accessory",
+    image: "./assets/images/products/014-kiprun-gants.png",
+    colors: ["#080808", "#B5B5B5"],
+    styles: ["sport", "running"],
+    includeInOutfits: false,
+    quantity: 2
+  },
+
+  {
+    id: "015",
+    name: "Bonnet Kiprun noir",
+    brand: "Kiprun",
+    size: "Taille unique",
+    price: 5.99,
+    category: "accessory",
+    image: "./assets/images/products/015-kiprun-bonnet.png",
+    colors: ["#080808", "#9A9A9A"],
+    styles: ["sport", "running", "minimaliste"],
+    includeInOutfits: true,
+    quantity: 1
+  },
+
+  {
+    id: "016",
+    name: "Bonnet Nike noir",
+    brand: "Nike",
+    size: "Taille unique",
+    price: 29.99,
+    category: "accessory",
+    image: "./assets/images/products/016-nike-bonnet.png",
+    colors: ["#080808", "#F5F5F2"],
+    styles: ["streetwear", "sport", "minimaliste"],
+    includeInOutfits: true,
+    quantity: 1
+  }
+];
+    
