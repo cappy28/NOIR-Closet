@@ -1563,4 +1563,34 @@ h4 {
     scroll-behavior: auto !important;
   }
       }
-  
+ /* Centrage parfait des vêtements */
+.product-media {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Image centrée dans toute la zone */
+.product-media img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center center;
+}
+
+/* Les vêtements noirs ressortent davantage */
+.product-media.is-dark img {
+  filter:
+    brightness(1.2)
+    contrast(1.15)
+    drop-shadow(0 24px 24px rgba(0, 0, 0, 0.95));
+}
+
