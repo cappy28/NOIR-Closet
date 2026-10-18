@@ -1,0 +1,840 @@
+import { products } from "../data/products.js";
+
+const app = document.getElementById("app");
+const savedLooksKey = "noir-closet-saved-looks";
+
+const categoryLabels = {
+  top: "Haut",
+  bottom: "Bas",
+  jacket: "Veste",
+  shoes: "Chaussures",
+  accessory: "Accessoire",
+  underwear: "Sous-vêtement"
+};
+
+const outfitSlots = [
+  {
+    key: "top",
+    label: "Haut",
+    categories: ["top"]
+  },
+  {
+    key: "bottom",
+    label: "Bas",
+    categories: ["bottom"]
+  },
+  {
+    key: "jacket",
+    label: "Veste",
+    categories: ["jacket"]
+  },
+  {
+    key: "shoes",
+    label: "Chaussures",
+    categories: ["shoes"]
+  },
+  {
+    key: "accessory",
+    label: "Accessoire",
+    categories: ["accessory"]
+  }
+];
+
+const state = {
+  route: "overview",
+  productId: null,
+  search: "",
+  category: "all",
+  outfit: {
+    top: "004",
+    bottom: "008",
+    jacket: "009",
+    shoes: "007",
+    accessory: "016"
+  }
+};
+
+let savedLooks = loadSavedLooks();
+
+function loadSavedLooks() {
+  try {
+    return JSON.parse(localStorage.getItem(savedLooksKey)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSavedLooks() {
+  localStorage.setItem(savedLooksKey, JSON.stringify(savedLooks));
+}
+
+function getProduct(id) {
+  return products.find(product => product.id === id);
+}
+
+function formatPrice(price) {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR"
+  }).format(price);
+}
+
+function escapeHTML(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function safeColor(color, fallback = "#222222") {
+  if (typeof color !== "string") return fallback;
+
+  const isHex = /^#[0-9a-fA-F]{3,8}$/.test(color);
+
+  return isHex ? color : fallback;
+}
+
+function getColor(product, index = 0) {
+  return safeColor(
+    product.colors?.[index],
+    index === 0 ? "#222222" : "#777777"
+  );
+}
+
+function getTotalValue() {
+  return products.reduce((total, product) => {
+    return total + Number(product.price || 0);
+  }, 0);
+}
+
+function getTotalPieces() {
+  return products.reduce((total, product) => {
+    return total + Number(product.quantity || 1);
+  }, 0);
+}
+
+function getProductInitial(product) {
+  if (product.category === "shoes") return "SHOES";
+  if (product.category === "jacket") return "OUTER";
+  if (product.category === "accessory") return "ACC";
+  if (product.category === "underwear") return "BASE";
+  if (product.category === "bottom") return "LOWER";
+  return "TOP";
+}
+
+function productMedia(product, extraClass = "") {
+  const image = product.image
+    ? `
+      <img
+        src="${escapeHTML(product.image)}"
+        alt="${escapeHTML(product.name)}"
+        loading="lazy"
+      />
+    `
+    : `
+      <div class="product-placeholder">
+        ${getProductInitial(product)}
+      </div>
+    `;
+
+  return `
+    <div
+      class="product-media ${extraClass}"
+      style="
+        --color-one: ${getColor(product, 0)};
+        --color-two: ${getColor(product, 1)};
+      "
+    >
+      <div class="product-label">
+        ${escapeHTML(categoryLabels[product.category] || "Pièce")}
+      </div>
+
+      ${image}
+    </div>
+  `;
+}
+
+function productCard(product) {
+  return `
+    <article
+      class="product-card"
+      data-product-id="${escapeHTML(product.id)}"
+    >
+      ${productMedia(product)}
+
+      <div class="product-content">
+        <div class="product-name">
+          ${escapeHTML(product.name)}
+        </div>
+
+        <div class="product-meta">
+          ${escapeHTML(product.brand)} · ${escapeHTML(product.size)}
+        </div>
+
+        <div class="product-price">
+          ${formatPrice(product.price)}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function getRouteTitle(route) {
+  const titles = {
+    overview: "overview",
+    closet: "my closet",
+    outfits: "outfit lab",
+    looks: "saved looks",
+    product: "product"
+  };
+
+  return titles[route] || "overview";
+}
+
+function setActiveNavigation(route) {
+  const activeRoute = route === "product" ? "closet" : route;
+
+  document.querySelectorAll("[data-route]").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.route === activeRoute
+    );
+  });
+
+  const currentRoute = document.getElementById("currentRoute");
+
+  if (currentRoute) {
+    currentRoute.textContent = `/ ${getRouteTitle(route)}`;
+  }
+}
+
+function goTo(route) {
+  state.route = route;
+  renderRoute();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderRoute() {
+  setActiveNavigation(state.route);
+
+  if (state.route === "overview") {
+    renderOverview();
+    return;
+  }
+
+  if (state.route === "closet") {
+    renderCloset();
+    return;
+  }
+
+  if (state.route === "outfits") {
+    renderOutfitLab();
+    return;
+  }
+
+  if (state.route === "looks") {
+    renderSavedLooks();
+    return;
+  }
+
+  if (state.route === "product") {
+    renderProductDetail();
+    return;
+  }
+
+  goTo("overview");
+}
+
+function renderOverview() {
+  const recentProducts = [...products].slice(-4).reverse();
+
+  app.innerHTML = `
+    <section class="screen active">
+      <div class="overview-hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Personal wardrobe system
+          </div>
+
+          <h1 class="hero-title">
+            Your wardrobe,<br>
+            <em>redefined.</em>
+          </h1>
+
+          <p class="hero-copy">
+            Tous tes vêtements dans un espace privé, visuel et minimaliste.
+            Chaque pièce possède son propre univers chromé.
+          </p>
+
+          <button class="button-primary" data-route="outfits">
+            Créer une tenue
+          </button>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat-card">
+          <div class="stat-label">Références</div>
+          <div class="stat-value">
+            ${String(products.length).padStart(2, "0")}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Pièces individuelles</div>
+          <div class="stat-value">
+            ${String(getTotalPieces()).padStart(2, "0")}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Valeur totale</div>
+          <div class="stat-value">
+            ${formatPrice(getTotalValue())}
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="panel recent-panel">
+          <div class="section-header">
+            <div>
+              <h2>Latest additions</h2>
+              <p>Les dernières pièces de ton dressing.</p>
+            </div>
+
+            <button class="link-button" data-route="closet">
+              View all
+            </button>
+          </div>
+
+          <div class="product-grid">
+            ${recentProducts.map(productCard).join("")}
+          </div>
+        </div>
+
+        <div class="panel feature-panel">
+          <div class="feature-content">
+            <div class="feature-label">
+              Wardrobe signature
+            </div>
+
+            <h2>Chrome state</h2>
+
+            <p>
+              Minimal silhouettes · Dark tones · Personal archive
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderCloset() {
+  app.innerHTML = `
+    <section class="screen active">
+      <div class="screen-heading">
+        <div>
+          <h1>My Closet</h1>
+          <p>
+            Tes vêtements, leurs détails et leurs univers visuels.
+          </p>
+        </div>
+
+        <button class="button-primary" data-route="outfits">
+          Créer une tenue
+        </button>
+      </div>
+
+      <div class="closet-controls">
+        <input
+          id="closetSearch"
+          class="field-input"
+          type="search"
+          placeholder="Rechercher une marque, une pièce ou une couleur..."
+          value="${escapeHTML(state.search)}"
+        />
+
+        <select id="categoryFilter" class="field-select">
+          <option value="all">Toutes les catégories</option>
+          <option value="top">Hauts</option>
+          <option value="bottom">Bas</option>
+          <option value="jacket">Vestes</option>
+          <option value="shoes">Chaussures</option>
+          <option value="accessory">Accessoires</option>
+          <option value="underwear">Sous-vêtements</option>
+        </select>
+      </div>
+
+      <div id="closetGrid" class="product-grid"></div>
+    </section>
+  `;
+
+  document.getElementById("categoryFilter").value = state.category;
+
+  renderClosetGrid();
+}
+
+function renderClosetGrid() {
+  const grid = document.getElementById("closetGrid");
+
+  if (!grid) return;
+
+  const search = state.search.toLowerCase().trim();
+
+  const filteredProducts = products.filter(product => {
+    const searchableText = [
+      product.name,
+      product.brand,
+      product.color,
+      ...(product.styles || [])
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch = searchableText.includes(search);
+
+    const matchesCategory =
+      state.category === "all" ||
+      product.category === state.category;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  if (!filteredProducts.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div>
+          <strong>Aucune pièce trouvée</strong>
+          Essaie une autre recherche ou une autre catégorie.
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML = filteredProducts.map(productCard).join("");
+}
+
+function renderProductDetail() {
+  const product = getProduct(state.productId);
+
+  if (!product) {
+    goTo("closet");
+    return;
+  }
+
+  const image = product.image
+    ? `
+      <img
+        src="${escapeHTML(product.image)}"
+        alt="${escapeHTML(product.name)}"
+      />
+    `
+    : `
+      <div class="detail-placeholder">
+        ${getProductInitial(product)}
+      </div>
+    `;
+
+  const tags = (product.styles || [])
+    .map(style => `<span class="tag">${escapeHTML(style)}</span>`)
+    .join("");
+
+  const compatibleProducts = products
+    .filter(other => {
+      if (other.id === product.id) return false;
+
+      return (other.styles || []).some(style =>
+        (product.styles || []).includes(style)
+      );
+    })
+    .slice(0, 4);
+
+  const discount = product.originalPrice
+    ? `
+      <div class="detail-fact">
+        <span>Prix d'origine</span>
+        <strong>${formatPrice(product.originalPrice)}</strong>
+      </div>
+    `
+    : "";
+
+  app.innerHTML = `
+    <section class="screen active">
+      <div class="product-detail">
+        <button class="detail-back" data-route="closet">
+          ← Retour au dressing
+        </button>
+
+        <div class="detail-layout">
+          <div
+            class="detail-art"
+            style="
+              --detail-one: ${getColor(product, 0)};
+              --detail-two: ${getColor(product, 1)};
+            "
+          >
+            ${
+              product.image
+                ? `
+                  <div
+                    class="detail-blur"
+                    style="
+                      background-image: url('${escapeHTML(product.image)}');
+                    "
+                  ></div>
+                `
+                : ""
+            }
+
+            ${image}
+          </div>
+
+          <div class="detail-information">
+            <div class="detail-kicker">
+              ${escapeHTML(categoryLabels[product.category] || "Pièce")}
+            </div>
+
+            <h1>${escapeHTML(product.name)}</h1>
+
+            <div class="detail-brand">
+              ${escapeHTML(product.brand)}
+            </div>
+
+            <div class="detail-price">
+              ${formatPrice(product.price)}
+            </div>
+
+            <div class="detail-facts">
+              <div class="detail-fact">
+                <span>Taille</span>
+                <strong>${escapeHTML(product.size || "—")}</strong>
+              </div>
+
+              <div class="detail-fact">
+                <span>Coloris</span>
+                <strong>${escapeHTML(product.color || "—")}</strong>
+              </div>
+
+              <div class="detail-fact">
+                <span>Catégorie</span>
+                <strong>
+                  ${escapeHTML(categoryLabels[product.category] || "—")}
+                </strong>
+              </div>
+
+              <div class="detail-fact">
+                <span>Quantité</span>
+                <strong>${product.quantity || 1}</strong>
+              </div>
+
+              ${discount}
+            </div>
+
+            <div class="tag-list">
+              ${tags}
+            </div>
+
+            <button
+              class="button-primary"
+              data-use-product="${escapeHTML(product.id)}"
+            >
+              Créer une tenue avec cette pièce
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <div class="section-header">
+            <div>
+              <h2>Pièces compatibles</h2>
+              <p>
+                Des éléments de ton dressing qui partagent un univers proche.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-grid">
+            ${
+              compatibleProducts.length
+                ? compatibleProducts.map(productCard).join("")
+                : `
+                  <div class="empty-state">
+                    <div>
+                      <strong>Pas encore de suggestion</strong>
+                      Cette pièce est unique dans ton dressing.
+                    </div>
+                  </div>
+                `
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function getAvailableForSlot(slot) {
+  return products.filter(product => {
+    const correctCategory = slot.categories.includes(product.category);
+    const allowed = product.includeInOutfits !== false;
+
+    return correctCategory && allowed;
+  });
+}
+
+function normalizeOutfitSelection() {
+  outfitSlots.forEach(slot => {
+    const current = getProduct(state.outfit[slot.key]);
+    const available = getAvailableForSlot(slot);
+
+    const currentIsValid =
+      current &&
+      slot.categories.includes(current.category) &&
+      current.includeInOutfits !== false;
+
+    if (!currentIsValid) {
+      state.outfit[slot.key] = available[0]?.id || "";
+    }
+  });
+}
+
+function getSelectedOutfitProducts() {
+  return outfitSlots
+    .map(slot => getProduct(state.outfit[slot.key]))
+    .filter(Boolean);
+}
+
+function getOutfitGradient(selectedProducts) {
+  const colors = selectedProducts.flatMap(product => [
+    getColor(product, 0),
+    getColor(product, 1)
+  ]);
+
+  const first = colors[0] || "#222222";
+  const second = colors[1] || "#777777";
+  const third = colors[2] || "#171717";
+
+  return `
+    radial-gradient(circle at 16% 18%, ${first} 0%, transparent 34%),
+    radial-gradient(circle at 82% 75%, ${second} 0%, transparent 42%),
+    linear-gradient(145deg, #050505, ${third}, #050505)
+  `;
+}
+
+function renderOutfitLab() {
+  normalizeOutfitSelection();
+
+  app.innerHTML = `
+    <section class="screen active">
+      <div class="screen-heading">
+        <div>
+          <h1>Outfit Lab</h1>
+          <p>
+            Compose une tenue avec les vêtements que tu possèdes déjà.
+          </p>
+        </div>
+      </div>
+
+      <div class="outfit-layout">
+        <div class="panel outfit-controls">
+          <div class="section-header">
+            <div>
+              <h2>Composition</h2>
+              <p>Sélectionne chaque élément du look.</p>
+            </div>
+          </div>
+
+          ${renderOutfitControls()}
+
+          <div class="outfit-actions">
+            <button class="button-primary" data-action="random-outfit">
+              Générer un look
+            </button>
+
+            <button class="button-secondary" data-action="save-outfit">
+              Sauvegarder
+            </button>
+          </div>
+        </div>
+
+        <div id="outfitStage"></div>
+      </div>
+    </section>
+  `;
+
+  renderOutfitStage();
+}
+
+function renderOutfitControls() {
+  return outfitSlots
+    .map(slot => {
+      const available = getAvailableForSlot(slot);
+
+      const options = available
+        .map(product => {
+          const selected =
+            state.outfit[slot.key] === product.id
+              ? "selected"
+              : "";
+
+          return `
+            <option value="${escapeHTML(product.id)}" ${selected}>
+              ${escapeHTML(product.name)} — ${formatPrice(product.price)}
+            </option>
+          `;
+        })
+        .join("");
+
+      return `
+        <div class="outfit-field">
+          <label for="outfit-${slot.key}">
+            ${escapeHTML(slot.label)}
+          </label>
+
+          <select
+            id="outfit-${slot.key}"
+            class="outfit-select"
+            data-outfit-slot="${escapeHTML(slot.key)}"
+          >
+            <option value="">Aucun élément</option>
+            ${options}
+          </select>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderOutfitStage() {
+  const stage = document.getElementById("outfitStage");
+
+  if (!stage) return;
+
+  const selectedProducts = getSelectedOutfitProducts();
+
+  const total = selectedProducts.reduce(
+    (sum, product) => sum + Number(product.price || 0),
+    0
+  );
+
+  const pieces = selectedProducts
+    .map(product => {
+      return `
+        <article class="outfit-piece">
+          ${productMedia(product)}
+
+          <div class="product-content">
+            <div class="product-name">
+              ${escapeHTML(product.name)}
+            </div>
+
+            <div class="product-meta">
+              ${escapeHTML(product.brand)}
+            </div>
+
+            <div class="product-price">
+              ${formatPrice(product.price)}
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  stage.innerHTML = `
+    <div
+      class="outfit-stage"
+      style="
+        --outfit-one: ${getColor(selectedProducts[0], 0)};
+        --outfit-two: ${getColor(selectedProducts[1], 0)};
+        --outfit-three: ${getColor(selectedProducts[2], 0)};
+        background: ${getOutfitGradient(selectedProducts)};
+      "
+    >
+      <div class="outfit-header">
+        <div>
+          <div class="eyebrow">Generated composition</div>
+          <h2>Untitled look</h2>
+        </div>
+
+        <div class="outfit-total">
+          ${formatPrice(total)}
+        </div>
+      </div>
+
+      <div class="outfit-pieces">
+        ${
+          pieces ||
+          `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div>
+                <strong>Ton look est vide</strong>
+                Sélectionne des vêtements dans le panneau de gauche.
+              </div>
+            </div>
+          `
+        }
+      </div>
+
+      <div class="outfit-note">
+        ${selectedProducts.length} pièce${
+          selectedProducts.length > 1 ? "s" : ""
+        } · Palette générée automatiquement à partir de tes vêtements.
+      </div>
+    </div>
+  `;
+}
+
+function renderSavedLooks() {
+  app.innerHTML = `
+    <section class="screen active">
+      <div class="screen-heading">
+        <div>
+          <h1>Saved Looks</h1>
+          <p>Tes compositions sauvegardées.</p>
+        </div>
+
+        <button class="button-primary" data-route="outfits">
+          Créer un look
+        </button>
+      </div>
+
+      <div class="looks-grid" id="savedLooksGrid"></div>
+    </section>
+  `;
+
+  const grid = document.getElementById("savedLooksGrid");
+
+  if (!savedLooks.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div>
+          <strong>Aucun look sauvegardé</strong>
+          Crée ta première tenue dans Outfit Lab.
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML = savedLooks
+    .map((look, index) => {
+      const selected = look.items
+        .map(id => getProduct(id))
+        .filter(Boolean);
+
+      const total = selected.reduce(
+        (sum, product) => sum + Number(product.price || 0),
+        0
+      );
+
+      const first = selected[0];
+      const second = selected[1];
+      const thir
