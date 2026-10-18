@@ -843,4 +843,201 @@ function renderSavedLooks() {
       const first = selected[0];
       const second = selected[1];
       const third = selected[2];
+
+return `
+  <article
+    class="look-card"
+    style="
+      --look-one: ${getColor(first, 0)};
+      --look-two: ${getColor(second, 0)};
+      --look-three: ${getColor(third, 0)};
+    "
+  >
+    <div class="look-content">
+      <div class="look-number">
+        LOOK ${String(index + 1).padStart(3, "0")}
+      </div>
+
+      <h3>${escapeHTML(look.name)}</h3>
+
+      <p>
+        ${selected.length} pièce${selected.length > 1 ? "s" : ""}
+        · ${formatPrice(total)}
+      </p>
+
+      <button
+        class="button-secondary"
+        style="margin-top: 15px;"
+        data-load-look="${escapeHTML(look.id)}"
+      >
+        Modifier
+      </button>
+    </div>
+  </article>
+`;
+})
+.join("");
+}
+
+function selectProductForOutfit(product) {
+  if (!product) return;
+
+  const slot = outfitSlots.find(item =>
+    item.categories.includes(product.category)
+  );
+
+  if (!slot) return;
+
+  state.outfit[slot.key] = product.id;
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  window.clearTimeout(showToast.timeout);
+
+  showToast.timeout = window.setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2400);
+}
+
+function generateRandomOutfit() {
+  outfitSlots.forEach(slot => {
+    const available = getAvailableForSlot(slot);
+
+    if (!available.length) return;
+
+    const randomIndex = Math.floor(Math.random() * available.length);
+
+    state.outfit[slot.key] = available[randomIndex].id;
+  });
+
+  renderOutfitLab();
+  showToast("Nouveau look généré.");
+}
+
+function saveCurrentOutfit() {
+  const items = getSelectedOutfitProducts()
+    .map(product => product.id);
+
+  if (!items.length) {
+    showToast("Ajoute au moins une pièce.");
+    return;
+  }
+
+  const look = {
+    id: `look-${Date.now()}`,
+    name: `Look ${String(savedLooks.length + 1).padStart(2, "0")}`,
+    items,
+    createdAt: new Date().toISOString()
+  };
+
+  savedLooks.unshift(look);
+  saveSavedLooks();
+
+  showToast("Look sauvegardé.");
+}
+
+function loadSavedLook(lookId) {
+  const look = savedLooks.find(item => item.id === lookId);
+
+  if (!look) return;
+
+  outfitSlots.forEach(slot => {
+    state.outfit[slot.key] = "";
+  });
+
+  look.items.forEach(productId => {
+    const product = getProduct(productId);
+
+    if (product) {
+      selectProductForOutfit(product);
+    }
+  });
+
+  goTo("outfits");
+}
+
+document.addEventListener("click", event => {
+  const routeTarget = event.target.closest("[data-route]");
+
+  if (routeTarget) {
+    goTo(routeTarget.dataset.route);
+    return;
+  }
+
+  const productTarget = event.target.closest("[data-product-id]");
+
+  if (productTarget) {
+    state.productId = productTarget.dataset.productId;
+    goTo("product");
+    return;
+  }
+
+  const useProductTarget = event.target.closest("[data-use-product]");
+
+  if (useProductTarget) {
+    const product = getProduct(
+      useProductTarget.dataset.useProduct
+    );
+
+    if (product) {
+      selectProductForOutfit(product);
+      goTo("outfits");
+    }
+
+    return;
+  }
+
+  const actionTarget = event.target.closest("[data-action]");
+
+  if (actionTarget) {
+    if (actionTarget.dataset.action === "random-outfit") {
+      generateRandomOutfit();
+    }
+
+    if (actionTarget.dataset.action === "save-outfit") {
+      saveCurrentOutfit();
+    }
+
+    return;
+  }
+
+  const loadLookTarget = event.target.closest("[data-load-look]");
+
+  if (loadLookTarget) {
+    loadSavedLook(loadLookTarget.dataset.loadLook);
+  }
+});
+
+document.addEventListener("input", event => {
+  if (event.target.id === "closetSearch") {
+    state.search = event.target.value;
+    renderClosetGrid();
+  }
+});
+
+document.addEventListener("change", event => {
+  if (event.target.id === "categoryFilter") {
+    state.category = event.target.value;
+    renderClosetGrid();
+  }
+
+  if (event.target.matches("[data-outfit-slot]")) {
+    state.outfit[event.target.dataset.outfitSlot] =
+      event.target.value;
+
+    renderOutfitStage();
+  }
+});
+
+window.addEventListener("hashchange", renderRoute);
+
+renderRoute();
+    
       
