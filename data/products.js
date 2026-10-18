@@ -1,4 +1,4 @@
-const baseProducts = [
+export const products = [
   {
     id: "001",
     name: "Pantalon noir à taille élastique",
@@ -226,21 +226,3 @@ const baseProducts = [
     quantity: 1
   }
 ];
-    
-const USER_PRODUCTS_KEY = "noir-closet-user-products";
-
-let userProducts = [];
-
-try {
-  userProducts = JSON.parse(
-    localStorage.getItem(USER_PRODUCTS_KEY) || "[]"
-  );
-} catch {
-  userProducts = [];
-}
-
-export const products = [
-  ...baseProducts,
-  ...userProducts
-];
-    
