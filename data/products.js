@@ -227,3 +227,20 @@ const baseProducts = [
   }
 ];
     
+const USER_PRODUCTS_KEY = "noir-closet-user-products";
+
+let userProducts = [];
+
+try {
+  userProducts = JSON.parse(
+    localStorage.getItem(USER_PRODUCTS_KEY) || "[]"
+  );
+} catch {
+  userProducts = [];
+}
+
+export const products = [
+  ...baseProducts,
+  ...userProducts
+];
+    
