@@ -3,7 +3,7 @@ const CACHE_NAME = "noir-closet-v3";
 const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css?v=3",
+  "./css/style.css?v=5",
   "./js/app.js?v=3",
   "./data/products.js",
   "./manifest.json",
