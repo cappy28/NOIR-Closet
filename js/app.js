@@ -97,11 +97,16 @@ function safeColor(color, fallback = "#222222") {
 }
 
 function getColor(product, index = 0) {
+  if (!product) {
+    return index === 0 ? "#222222" : "#777777";
+  }
+
   return safeColor(
     product.colors?.[index],
     index === 0 ? "#222222" : "#777777"
   );
 }
+
 
 function getTotalValue() {
   return products.reduce((total, product) => {
