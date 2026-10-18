@@ -10,7 +10,8 @@
   --muted-light: #b9b9b9;
   --line: rgba(255, 255, 255, 0.1);
   --line-strong: rgba(255, 255, 255, 0.2);
-  --accent: #e2ff55;
+  --accent: #e3e7ea;
+  --accent-soft: rgba(227, 231, 234, 0.16);
   --danger: #ff7777;
   --radius-lg: 28px;
   --radius-md: 19px;
