@@ -2,125 +2,100 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>NØIR Closet</title>
   <meta
-    name="description"
-    content="NØIR Closet — ton dressing personnel numérique."
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
 
-  <link rel="stylesheet" href="./css/style.css?v=7" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  />
 
-<link rel="manifest" href="./manifest.json" />
+  <title>NØIR Closet</title>
 
-<meta name="theme-color" content="#050505" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black-translucent"
-/>
+  <meta
+    name="description"
+    content="Ton dressing personnel numérique."
+  />
 
+  <link rel="icon" href="./assets/icons/icon.svg" type="image/svg+xml" />
+
+  <link
+    rel="stylesheet"
+    href="./css/style.css?v=10"
+  />
+
+  <link
+    rel="manifest"
+    href="./manifest.json"
+  />
 </head>
 
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
-  <div class="chrome-noise"></div>
+  <div id="app"></div>
 
-  <div class="app-shell">
-
-    <aside class="sidebar">
-      <button class="brand" data-route="overview">
-        NØIR<span>.</span>
-      </button>
-
-      <div class="sidebar-label">
-        PERSONAL WARDROBE
-      </div>
-
-      <nav class="navigation">
-        <button class="nav-item active" data-route="overview">
-          <span class="nav-symbol">⌂</span>
-          <span>Overview</span>
-        </button>
-
-        <button class="nav-item" data-route="closet">
-          <span class="nav-symbol">◫</span>
-          <span>My Closet</span>
-        </button>
-
-        <button class="nav-item" data-route="outfits">
-          <span class="nav-symbol">✦</span>
-          <span>Outfit Lab</span>
-        </button>
-
-        <button class="nav-item" data-route="looks">
-          <span class="nav-symbol">◈</span>
-          <span>Saved Looks</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-bottom">
-        <span class="status-dot"></span>
-        <div>
-          <strong>Private space</strong>
-          <small>Your wardrobe only</small>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main-content">
-
-      <header class="topbar">
-        <div>
-          <p class="topbar-overline">NØIR CLOSET</p>
-          <p class="topbar-route" id="currentRoute">
-            / overview
-          </p>
-        </div>
-
-        <div class="topbar-right">
-          <span class="local-status">
-            LOCAL ARCHIVE
-          </span>
-
-          <div class="profile-avatar">
-            N
-          </div>
-        </div>
-      </header>
-
-      <div id="app"></div>
-
-    </main>
-  </div>
-
-  <div id="toast" class="toast"></div>
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
 
   <script type="module">
-  import("./js/app.js?v=7")
-    .catch((error) => {
-      console.error(error);
+    import("./js/app.js?v=10")
+      .catch((error) => {
+        const app = document.getElementById("app");
 
-      <script
-  type="module"
-  src="./js/add-piece.js?v=1"
-></script>
-</script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("./sw.js")
-        .catch(error => {
-          console.error("Service Worker:", error);
-        });
-    });
-  }
-</script>
-  
+        app.innerHTML = "";
+
+        const errorBox = document.createElement("div");
+
+        errorBox.style.cssText = `
+          margin: 24px;
+          padding: 22px;
+          border: 1px solid #777;
+          border-radius: 16px;
+          color: #ffffff;
+          background: #180909;
+          font-family: monospace;
+          font-size: 13px;
+          line-height: 1.6;
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+        `;
+
+        errorBox.textContent =
+          "Erreur JavaScript NØIR Closet\n\n" +
+          String(
+            error.stack ||
+            error.message ||
+            error
+          );
+
+        app.appendChild(errorBox);
+
+        console.error(error);
+      });
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("./sw.js?v=10")
+          .catch((error) => {
+            console.error(
+              "Service Worker non enregistré :",
+              error
+            );
+          });
+      });
+    }
+  </script>
 </body>
-  </html>
-  
+</html>
