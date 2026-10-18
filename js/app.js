@@ -842,4 +842,5 @@ function renderSavedLooks() {
 
       const first = selected[0];
       const second = selected[1];
-      const thir
+      const third = selected[2];
+      
