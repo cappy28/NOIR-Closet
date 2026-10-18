@@ -169,8 +169,10 @@ function productMedia(product, extraClass = "") {
     `;
 
   return `
-    <div
-      class="product-media ${extraClass}"
+    <div class="product-media ${extraClass} ${
+  isDarkProduct(product) ? "is-dark" : ""
+}">
+
       style="
         --color-one: ${getColor(product, 0)};
         --color-two: ${getColor(product, 1)};
