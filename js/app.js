@@ -107,6 +107,30 @@ function getColor(product, index = 0) {
   );
 }
 
+function isDarkProduct(product) {
+  const value = getColor(product, 0).replace("#", "");
+
+  const normalized =
+    value.length === 3
+      ? value
+          .split("")
+          .map(char => char + char)
+          .join("")
+      : value.slice(0, 6);
+
+  if (normalized.length !== 6) return false;
+
+  const red = parseInt(normalized.slice(0, 2), 16) / 255;
+  const green = parseInt(normalized.slice(2, 4), 16) / 255;
+  const blue = parseInt(normalized.slice(4, 6), 16) / 255;
+
+  const luminance =
+    0.2126 * red +
+    0.7152 * green +
+    0.0722 * blue;
+
+  return luminance < 0.22;
+      }
 
 function getTotalValue() {
   return products.reduce((total, product) => {
