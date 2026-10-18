@@ -1,4 +1,4 @@
-export const products = [
+const baseProducts = [
   {
     id: "001",
     name: "Pantalon noir à taille élastique",
