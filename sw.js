@@ -1,10 +1,10 @@
-const CACHE_NAME = "noir-closet-v3";
+const CACHE_NAME = "noir-closet-v7";
 
 const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css?v=5",
-  "./js/app.js?v=3",
+  "./css/style.css?v=7",
+  "./js/app.js?v=7",
   "./data/products.js",
   "./manifest.json",
   "./assets/icons/icon.svg"
