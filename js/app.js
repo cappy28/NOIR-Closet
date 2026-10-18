@@ -154,38 +154,31 @@ function getProductInitial(product) {
 }
 
 function productMedia(product, extraClass = "") {
-  const image = product.image
-    ? `
+  const colorOne = getColor(product, 0) || "#252525";
+  const colorTwo = getColor(product, 1) || colorOne;
+
+  const darkClass = isDarkProduct(product)
+    ? "is-dark"
+    : "";
+
+  return `
+    <div
+      class="product-media ${extraClass} ${darkClass}"
+      style="
+        --color-one: ${colorOne};
+        --color-two: ${colorTwo};
+        --primary-color: ${colorOne};
+      "
+    >
       <img
-        src="${escapeHTML(product.image)}"
+        src="${product.image}"
         alt="${escapeHTML(product.name)}"
         loading="lazy"
       />
-    `
-    : `
-      <div class="product-placeholder">
-        ${getProductInitial(product)}
-      </div>
-    `;
-
-  return `
-    <div class="product-media ${extraClass} ${
-  isDarkProduct(product) ? "is-dark" : ""
-}">
-
-      style="
-        --color-one: ${getColor(product, 0)};
-        --color-two: ${getColor(product, 1)};
-      "
-    >
-      <div class="product-label">
-        ${escapeHTML(categoryLabels[product.category] || "Pièce")}
-      </div>
-
-      ${image}
     </div>
   `;
 }
+
 
 function productCard(product) {
   return `
