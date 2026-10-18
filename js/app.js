@@ -1065,6 +1065,19 @@ document.addEventListener("change", event => {
 });
 
 window.addEventListener("hashchange", renderRoute);
+document.addEventListener("click", event => {
+  const routeTarget = event.target.closest("[data-route]");
+
+  if (!routeTarget) return;
+
+  event.preventDefault();
+
+  const route = routeTarget.dataset.route;
+
+  if (route) {
+    goTo(route);
+  }
+});
 
 renderRoute();
     
