@@ -1471,6 +1471,146 @@ function isNeutralRgb(rgb) {
     brightness > 220
   );
 }
+function colorCompatibility(firstColor, secondColor) {
+  const first = colorToRgb(firstColor);
+  const second = colorToRgb(secondColor);
+
+  const firstNeutral = isNeutralRgb(first);
+  const secondNeutral = isNeutralRgb(second);
+
+  if (firstNeutral && secondNeutral) {
+    return 0.9;
+  }
+
+  if (firstNeutral || secondNeutral) {
+    return 0.76;
+  }
+
+  const distance = Math.sqrt(
+    Math.pow(first.r - second.r, 2) +
+    Math.pow(first.g - second.g, 2) +
+    Math.pow(first.b - second.b, 2)
+  );
+
+  const maximumDistance = 441.67;
+
+  return Math.max(
+    0,
+    1 - distance / maximumDistance
+  );
+}
+
+function styleCompatibility(firstProduct, secondProduct) {
+  const firstStyles =
+    firstProduct.styles || [];
+
+  const secondStyles =
+    secondProduct.styles || [];
+
+  const commonStyles = firstStyles.filter(
+    style => secondStyles.includes(style)
+  );
+
+  if (!commonStyles.length) {
+    return 0;
+  }
+
+  return Math.min(
+    1,
+    commonStyles.length / 2
+  );
+}
+
+function productCompatibility(
+  candidate,
+  selectedProducts
+) {
+  if (!selectedProducts.length) {
+    return 0.5;
+  }
+
+  const scores = selectedProducts.map(product => {
+    const candidateColors =
+      candidate.colors || ["#222222"];
+
+    const productColors =
+      product.colors || ["#222222"];
+
+    let bestColorScore = 0;
+
+    candidateColors.forEach(candidateColor => {
+      productColors.forEach(productColor => {
+        const score = colorCompatibility(
+          candidateColor,
+          productColor
+        );
+
+        bestColorScore = Math.max(
+          bestColorScore,
+          score
+        );
+      });
+    });
+
+    const styleScore =
+      styleCompatibility(
+        candidate,
+        product
+      );
+
+    return (
+      styleScore * 0.58 +
+      bestColorScore * 0.42
+    );
+  });
+
+  return (
+    scores.reduce(
+      (total, score) => total + score,
+      0
+    ) / scores.length
+  );
+}
+
+function chooseSmartProduct(
+  candidates,
+  selectedProducts
+) {
+  if (!candidates.length) {
+    return null;
+  }
+
+  const scoredProducts = candidates
+    .map(product => ({
+      product,
+      score:
+        productCompatibility(
+          product,
+          selectedProducts
+        ) +
+        Math.random() * 0.12
+    }))
+    .sort(
+      (first, second) =>
+        second.score - first.score
+    );
+
+  /*
+    On garde une petite part de hasard
+    pour ne pas générer toujours le même look.
+  */
+  const bestProducts =
+    scoredProducts.slice(
+      0,
+      Math.min(3, scoredProducts.length)
+    );
+
+  const randomIndex = Math.floor(
+    Math.random() * bestProducts.length
+  );
+
+  return bestProducts[randomIndex].product;
+}
 
 function generateRandomOutfit() {
   outfitSlots.forEach(slot => {
