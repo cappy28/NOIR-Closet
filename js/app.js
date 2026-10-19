@@ -1817,7 +1817,74 @@ async function handleAddPieceSubmit(event) {
     error.hidden = false;
   }
   }
-      
+  function getDeletedProductIds() {
+  try {
+    const deletedIds = JSON.parse(
+      localStorage.getItem(deletedProductsKey) || "[]"
+    );
+
+    return Array.isArray(deletedIds)
+      ? deletedIds
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function applyDeletedProducts() {
+  const deletedIds = new Set(
+    getDeletedProductIds()
+  );
+
+  for (let index = products.length - 1; index >= 0; index--) {
+    if (deletedIds.has(products[index].id)) {
+      products.splice(index, 1);
+    }
+  }
+}
+
+function deleteProductById(productId) {
+  const productIndex = products.findIndex(
+    product => product.id === productId
+  );
+
+  if (productIndex === -1) {
+    return false;
+  }
+
+  const product = products[productIndex];
+
+  products.splice(productIndex, 1);
+
+  if (product.userCreated === true) {
+    saveCustomProducts();
+  } else {
+    const deletedIds = getDeletedProductIds();
+
+    if (!deletedIds.includes(productId)) {
+      deletedIds.push(productId);
+    }
+
+    localStorage.setItem(
+      deletedProductsKey,
+      JSON.stringify(deletedIds)
+    );
+  }
+
+  savedLooks = savedLooks
+    .map(look => ({
+      ...look,
+      items: (look.items || []).filter(
+        id => id !== productId
+      )
+    }))
+    .filter(look => look.items.length > 0);
+
+  saveSavedLooks();
+
+  return true;
+}
+    
 function handleClick(event) {
     const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
