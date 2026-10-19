@@ -1639,16 +1639,58 @@ function chooseSmartProduct(
 }
 
 function generateRandomOutfit() {
-  const selectedProducts = [];
-  const nextOutfit = {};
+  const nextOutfit = {
+    ...state.outfit
+  };
 
+  const selectedProducts = [];
+
+  /*
+    On conserve d'abord les pièces verrouillées
+    pour que l'algorithme s'adapte autour d'elles.
+  */
   outfitSlots.forEach(slot => {
+    const isLocked =
+      state.lockedOutfitSlots[slot.key] === true;
+
+    if (!isLocked) return;
+
+    const lockedProduct =
+      getProduct(state.outfit[slot.key]);
+
+    if (lockedProduct) {
+      selectedProducts.push(lockedProduct);
+    }
+  });
+
+  /*
+    On remplace uniquement les pièces non verrouillées.
+  */
+  outfitSlots.forEach(slot => {
+    const isLocked =
+      state.lockedOutfitSlots[slot.key] === true;
+
+    if (isLocked) return;
+
     const availableProducts =
       getAvailableForSlot(slot);
 
+    const productsWithoutDuplicates =
+      availableProducts.filter(product => {
+        return !selectedProducts.some(
+          selected =>
+            selected.id === product.id
+        );
+      });
+
+    const candidates =
+      productsWithoutDuplicates.length
+        ? productsWithoutDuplicates
+        : availableProducts;
+
     const chosenProduct =
       chooseSmartProduct(
-        availableProducts,
+        candidates,
         selectedProducts
       );
 
@@ -1656,9 +1698,7 @@ function generateRandomOutfit() {
       chosenProduct?.id || "";
 
     if (chosenProduct) {
-      selectedProducts.push(
-        chosenProduct
-      );
+      selectedProducts.push(chosenProduct);
     }
   });
 
