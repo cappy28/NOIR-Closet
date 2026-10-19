@@ -9,6 +9,8 @@ export const products = [
     image: "./assets/images/products/001-uniqlo-pantalon-noir.png",
     colors: ["#080808", "#303132"],
     styles: ["minimaliste", "casual", "streetwear"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -23,6 +25,8 @@ export const products = [
     image: "./assets/images/products/002-jack-jones-jean-bleu-clair.png",
     colors: ["#91AEC0", "#D6E4EA"],
     styles: ["casual", "streetwear", "minimaliste"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -37,6 +41,8 @@ export const products = [
     image: "./assets/images/products/003-jack-jones-jean-bleu-2.png",
     colors: ["#4F7898", "#8EABC0"],
     styles: ["casual", "streetwear", "minimaliste"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -51,6 +57,8 @@ export const products = [
     image: "./assets/images/products/004-bershka-hoodie-touche.png",
     colors: ["#080808", "#D8D6A6"],
     styles: ["streetwear", "graphique", "monochrome"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -65,6 +73,8 @@ export const products = [
     image: "./assets/images/products/005-bershka-pull-rose-noir.png",
     colors: ["#E7A8B9", "#101010"],
     styles: ["graphique", "streetwear", "statement"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -79,6 +89,8 @@ export const products = [
     image: "./assets/images/products/006-nike-boxers-lot-3.png",
     colors: ["#080808", "#F2F2F2"],
     styles: ["sport", "minimaliste"],
+    warmth: 1,
+    rainProtection: false,
     includeInOutfits: false,
     quantity: 3
   },
@@ -93,6 +105,8 @@ export const products = [
     image: "./assets/images/products/007-nike-sneakers.png",
     colors: ["#090A0B", "#B9BEC1"],
     styles: ["streetwear", "sport", "techwear"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -108,6 +122,8 @@ export const products = [
     image: "./assets/images/products/008-bershka-jean-noir-delave.png",
     colors: ["#17191A", "#5A5C5D"],
     styles: ["streetwear", "casual", "monochrome", "grunge"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -123,6 +139,8 @@ export const products = [
     image: "./assets/images/products/009-bershka-doudoune-noire.png",
     colors: ["#030303", "#BFC1C2"],
     styles: ["streetwear", "techwear", "futuriste", "hiver"],
+    warmth: 5,
+    rainProtection: true,
     includeInOutfits: true,
     quantity: 1
   },
@@ -138,6 +156,8 @@ export const products = [
     image: "./assets/images/products/010-bershka-hoodie-camouflage.png",
     colors: ["#4A3028", "#4B513A"],
     styles: ["streetwear", "militaire", "casual"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -152,6 +172,8 @@ export const products = [
     image: "./assets/images/products/011-bershka-cargo-camouflage.png",
     colors: ["#596044", "#C6B887"],
     styles: ["streetwear", "militaire", "utility"],
+    warmth: 2,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -166,6 +188,8 @@ export const products = [
     image: "./assets/images/products/012-zeeman-tshirt-blanc.png",
     colors: ["#FFFFFF", "#B9BBB8"],
     styles: ["basique", "minimaliste", "casual"],
+    warmth: 1,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -180,6 +204,8 @@ export const products = [
     image: "./assets/images/products/013-zeeman-tshirt-2.png",
     colors: ["#FFFFFF", "#777A78"],
     styles: ["basique", "minimaliste", "casual"],
+    warmth: 1,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -194,6 +220,8 @@ export const products = [
     image: "./assets/images/products/014-kiprun-gants.png",
     colors: ["#080808", "#B5B5B5"],
     styles: ["sport", "running"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: false,
     quantity: 2
   },
@@ -208,6 +236,8 @@ export const products = [
     image: "./assets/images/products/015-kiprun-bonnet.png",
     colors: ["#080808", "#9A9A9A"],
     styles: ["sport", "running", "minimaliste"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   },
@@ -222,6 +252,8 @@ export const products = [
     image: "./assets/images/products/016-nike-bonnet.png",
     colors: ["#080808", "#F5F5F2"],
     styles: ["streetwear", "sport", "minimaliste"],
+    warmth: 4,
+    rainProtection: false,
     includeInOutfits: true,
     quantity: 1
   }
