@@ -2134,7 +2134,48 @@ function applyEditedProducts() {
     }
   });
 }
-    
+
+function loadFavoriteProductIds() {
+  try {
+    const savedFavorites = JSON.parse(
+      localStorage.getItem(favoritesKey) || "[]"
+    );
+
+    return Array.isArray(savedFavorites)
+      ? savedFavorites
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavoriteProductIds() {
+  localStorage.setItem(
+    favoritesKey,
+    JSON.stringify(favoriteProductIds)
+  );
+}
+
+function isFavorite(productId) {
+  return favoriteProductIds.includes(productId);
+}
+
+function toggleFavorite(productId) {
+  const favoriteIndex =
+    favoriteProductIds.indexOf(productId);
+
+  if (favoriteIndex === -1) {
+    favoriteProductIds.push(productId);
+    saveFavoriteProductIds();
+    return true;
+  }
+
+  favoriteProductIds.splice(favoriteIndex, 1);
+  saveFavoriteProductIds();
+
+  return false;
+}
+
 function handleClick(event) {
   const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
