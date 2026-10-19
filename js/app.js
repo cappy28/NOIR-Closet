@@ -2535,12 +2535,9 @@ function toggleFavorite(productId) {
 
 function loadLaundryProductIds() {
   try {
-    const savedLaundryProducts =
-      JSON.parse(
-        localStorage.getItem(
-          laundryProductsKey
-        ) || "[]"
-      );
+    const savedLaundryProducts = JSON.parse(
+      localStorage.getItem(laundryProductsKey) || "[]"
+    );
 
     return Array.isArray(savedLaundryProducts)
       ? savedLaundryProducts
@@ -2568,7 +2565,6 @@ function toggleLaundryStatus(productId) {
   if (laundryIndex === -1) {
     laundryProductIds.push(productId);
     saveLaundryProductIds();
-
     return true;
   }
 
