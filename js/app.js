@@ -2128,6 +2128,7 @@ function init() {
   }
 
 loadCustomProducts();
+applyEditedProducts();
 applyDeletedProducts();
 
 mountShell();
