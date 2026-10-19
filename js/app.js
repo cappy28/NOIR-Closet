@@ -1129,7 +1129,7 @@ function renderOutfitLab() {
               type="button"
               data-action="random-outfit"
             >
-              Générer un look
+              Générer un look harmonisé
             </button>
 
             <button
