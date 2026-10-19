@@ -2006,7 +2006,9 @@ function init() {
     return;
   }
 
-  loadCustomProducts();
+loadCustomProducts();
+applyDeletedProducts();
+
 mountShell();
 createAddPieceModal();
 
