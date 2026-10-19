@@ -3606,6 +3606,8 @@ function generateWeatherOutfit(
 
   const plan =
     getWeatherOutfitPlan(day);
+  weatherState.selectedForecastIndex =
+  forecastIndex;
 
   const nextOutfit = {
     ...state.outfit
