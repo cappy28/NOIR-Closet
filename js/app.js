@@ -1873,12 +1873,19 @@ function init() {
     return;
   }
 
-  mountShell();
+  loadCustomProducts();
+mountShell();
+createAddPieceModal();
 
-  document.addEventListener(
-    "click",
-    handleClick
-  );
+document.addEventListener(
+  "click",
+  handleClick
+);
+
+document.addEventListener(
+  "submit",
+  handleAddPieceSubmit
+);
 
   document.addEventListener(
     "input",
