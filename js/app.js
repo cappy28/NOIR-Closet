@@ -1466,7 +1466,7 @@ function isNeutralRgb(rgb) {
     (rgb.r + rgb.g + rgb.b) / 3;
 
   return (
-    maximum - minimum <  thirty ||
+    maximum - minimum <  30 ||
     brightness < 45 ||
     brightness > 220
   );
