@@ -1753,6 +1753,14 @@ async function handleAddPieceSubmit(event) {
   }
       
 function handleClick(event) {
+    const closeAddPiece =
+    event.target.closest("[data-close-add-piece]");
+
+  if (closeAddPiece) {
+    closeAddPieceModal();
+    return;
+  }
+  
   const routeTarget =
     event.target.closest("[data-route]");
 
@@ -1803,6 +1811,11 @@ function handleClick(event) {
     const action =
       actionTarget.dataset.action;
 
+    if (action === "open-add-piece") {
+  openAddPieceModal();
+  return;
+}
+  
     if (action === "random-outfit") {
       generateRandomOutfit();
     }
