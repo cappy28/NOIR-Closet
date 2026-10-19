@@ -1913,7 +1913,8 @@ function productCompatibility(
 
 function chooseSmartProduct(
   candidates,
-  selectedProducts
+  selectedProducts,
+  weatherPlan = null
 ) {
   if (!candidates.length) {
     return null;
@@ -1924,9 +1925,10 @@ function chooseSmartProduct(
       product,
       score:
         productCompatibility(
-          product,
-          selectedProducts
-        ) +
+  product,
+  selectedProducts,
+  weatherPlan
+) +
         Math.random() * 0.12
     }))
     .sort(
@@ -3769,11 +3771,12 @@ function generateWeatherOutfit(
         ? withoutDuplicates
         : available;
 
-    const chosen =
-      chooseSmartProduct(
-        candidates,
-        selectedProducts
-      );
+   const chosen =
+  chooseSmartProduct(
+    candidates,
+    selectedProducts,
+    plan
+  );
 
     nextOutfit[slot.key] =
       chosen?.id || "";
