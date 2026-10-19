@@ -1147,6 +1147,96 @@ function getOutfitGradient(selectedProducts) {
   `;
 }
 
+function renderWeatherOutfitContext() {
+  const context = document.getElementById(
+    "weatherOutfitContext"
+  );
+
+  if (!context) {
+    return;
+  }
+
+  const selectedIndex =
+    weatherState.selectedForecastIndex;
+
+  const forecast =
+    weatherState.data?.forecast || [];
+
+  if (
+    selectedIndex === null ||
+    !forecast[selectedIndex]
+  ) {
+    context.innerHTML = "";
+    return;
+  }
+
+  const day = forecast[selectedIndex];
+  const plan = getWeatherOutfitPlan(day);
+
+  context.innerHTML = `
+    <section
+      class="weather-card weather-ready"
+      style="margin-bottom: 24px;"
+    >
+      <div class="weather-card-top">
+        <div>
+          <div class="eyebrow">
+            Météo prise en compte
+          </div>
+
+          <h2>
+            ${escapeHTML(
+              formatForecastDay(
+                day.date,
+                selectedIndex
+              )
+            )}
+          </h2>
+
+          <p>
+            ${escapeHTML(plan.title)}
+          </p>
+        </div>
+
+        <div class="weather-temperature">
+          ${Math.round(day.temperatureMax)}°
+          /
+          ${Math.round(day.temperatureMin)}°
+        </div>
+      </div>
+
+      <div class="weather-facts">
+        <div>
+          <span>Pluie</span>
+          <strong>
+            ${Math.round(
+              day.precipitationProbability
+            )}%
+          </strong>
+        </div>
+
+        <div>
+          <span>Vent</span>
+          <strong>
+            ${Math.round(day.windSpeed)} km/h
+          </strong>
+        </div>
+
+        <div>
+          <span>Couche</span>
+          <strong>
+            ${
+              plan.needsJacket
+                ? "Veste conseillée"
+                : "Pas obligatoire"
+            }
+          </strong>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function renderOutfitLab() {
   const view = document.getElementById("view");
 
