@@ -2185,6 +2185,17 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+   
+    if (action === "edit-product") {
+  const productId =
+    actionTarget.dataset.productId;
+
+  if (getProduct(productId)) {
+    openAddPieceModal(productId);
+  }
+
+  return;
+}
  
     if (action === "delete-product") {
     const productId =
