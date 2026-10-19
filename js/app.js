@@ -1962,6 +1962,35 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+ 
+    if (action === "delete-product") {
+    const productId =
+      actionTarget.dataset.productId;
+
+    const product = getProduct(productId);
+
+    if (!product) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Supprimer « ${product.name} » de ton dressing ?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const deleted =
+      deleteProductById(productId);
+
+    if (deleted) {
+      showToast("Pièce supprimée.");
+      goTo("closet");
+    }
+
+    return;
+  }
 
     if (action === "open-add-piece") {
   openAddPieceModal();
