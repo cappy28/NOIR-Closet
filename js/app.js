@@ -3094,6 +3094,11 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+
+    if (action === "load-weather") {
+  loadWeather();
+  return;
+}
     
     if (action === "toggle-laundry") {
       
