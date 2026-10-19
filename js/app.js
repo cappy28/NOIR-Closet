@@ -2132,20 +2132,113 @@ function applyEditedProducts() {
 }
     
 function handleClick(event) {
-    const closeAddPiece =
+  const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
 
   if (closeAddPiece) {
+    event.preventDefault();
     closeAddPieceModal();
     return;
   }
-  
+
+  /*
+    Important :
+    les boutons Modifier et Supprimer possèdent aussi
+    data-product-id. On traite donc data-action avant
+    data-product-id.
+  */
+  const actionTarget =
+    event.target.closest("[data-action]");
+
+  if (actionTarget) {
+    event.preventDefault();
+
+    const action =
+      actionTarget.dataset.action;
+
+    if (action === "edit-product") {
+      const productId =
+        actionTarget.dataset.productId;
+
+      if (getProduct(productId)) {
+        openAddPieceModal(productId);
+      }
+
+      return;
+    }
+
+    if (action === "delete-product") {
+      const productId =
+        actionTarget.dataset.productId;
+
+      const product = getProduct(productId);
+
+      if (!product) {
+        return;
+      }
+
+      const confirmed = window.confirm(
+        `Supprimer « ${product.name} » de ton dressing ?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const deleted =
+        deleteProductById(productId);
+
+      if (deleted) {
+        showToast("Pièce supprimée.");
+        goTo("closet");
+      }
+
+      return;
+    }
+
+    if (action === "open-add-piece") {
+      openAddPieceModal();
+      return;
+    }
+
+    if (action === "random-outfit") {
+      generateRandomOutfit();
+      return;
+    }
+
+    if (action === "save-outfit") {
+      saveCurrentOutfit();
+      return;
+    }
+
+    return;
+  }
+
   const routeTarget =
     event.target.closest("[data-route]");
 
   if (routeTarget) {
     event.preventDefault();
     goTo(routeTarget.dataset.route);
+    return;
+  }
+
+  const useProductTarget =
+    event.target.closest("[data-use-product]");
+
+  if (useProductTarget) {
+    event.preventDefault();
+
+    const product =
+      getProduct(
+        useProductTarget.dataset.useProduct
+      );
+
+    if (product) {
+      selectProductForOutfit(product);
+      goTo("outfits");
+    }
+
     return;
   }
 
@@ -2159,89 +2252,6 @@ function handleClick(event) {
       "product",
       productTarget.dataset.productId
     );
-
-    return;
-  }
-
-  const useProductTarget =
-    event.target.closest("[data-use-product]");
-
-  if (useProductTarget) {
-    event.preventDefault();
-
-    const product = getProduct(
-      useProductTarget.dataset.useProduct
-    );
-
-    if (product) {
-      selectProductForOutfit(product);
-      goTo("outfits");
-    }
-
-    return;
-  }
-
-  const actionTarget =
-    event.target.closest("[data-action]");
-
-  if (actionTarget) {
-    event.preventDefault();
-
-    const action =
-      actionTarget.dataset.action;
-   
-    if (action === "edit-product") {
-  const productId =
-    actionTarget.dataset.productId;
-
-  if (getProduct(productId)) {
-    openAddPieceModal(productId);
-  }
-
-  return;
-}
- 
-    if (action === "delete-product") {
-    const productId =
-      actionTarget.dataset.productId;
-
-    const product = getProduct(productId);
-
-    if (!product) {
-      return;
-    }
-
-    const confirmed = window.confirm(
-      `Supprimer « ${product.name} » de ton dressing ?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    const deleted =
-      deleteProductById(productId);
-
-    if (deleted) {
-      showToast("Pièce supprimée.");
-      goTo("closet");
-    }
-
-    return;
-  }
-
-    if (action === "open-add-piece") {
-  openAddPieceModal();
-  return;
-}
-  
-    if (action === "random-outfit") {
-      generateRandomOutfit();
-    }
-
-    if (action === "save-outfit") {
-      saveCurrentOutfit();
-    }
 
     return;
   }
