@@ -56,6 +56,9 @@ const state = {
   }
 };
 
+const removeBgWorkerUrl =
+  "https://noir-closet-remove-bg.lucascapel.workers.dev/";
+
 let savedLooks = loadSavedLooks();
 let searchFrame = 0;
 
