@@ -1906,6 +1906,76 @@ function deleteProductById(productId) {
 
   return true;
 }
+function getEditedProducts() {
+  try {
+    const editedProducts = JSON.parse(
+      localStorage.getItem(editedProductsKey) || "{}"
+    );
+
+    if (
+      !editedProducts ||
+      typeof editedProducts !== "object" ||
+      Array.isArray(editedProducts)
+    ) {
+      return {};
+    }
+
+    return editedProducts;
+  } catch {
+    return {};
+  }
+}
+
+function saveEditedProduct(product) {
+  const editedProducts = getEditedProducts();
+
+  editedProducts[product.id] = {
+    name: product.name,
+    brand: product.brand,
+    size: product.size,
+    price: product.price,
+    originalPrice: product.originalPrice ?? null,
+    category: product.category,
+    image: product.image,
+    colors: product.colors || [],
+    styles: product.styles || [],
+    includeInOutfits:
+      product.includeInOutfits !== false,
+    quantity: product.quantity || 1
+  };
+
+  localStorage.setItem(
+    editedProductsKey,
+    JSON.stringify(editedProducts)
+  );
+}
+
+function removeEditedProduct(productId) {
+  const editedProducts = getEditedProducts();
+
+  delete editedProducts[productId];
+
+  localStorage.setItem(
+    editedProductsKey,
+    JSON.stringify(editedProducts)
+  );
+}
+
+function applyEditedProducts() {
+  const editedProducts = getEditedProducts();
+
+  products.forEach((product, index) => {
+    const editedProduct =
+      editedProducts[product.id];
+
+    if (editedProduct) {
+      products[index] = {
+        ...product,
+        ...editedProduct
+      };
+    }
+  });
+}
     
 function handleClick(event) {
     const closeAddPiece =
