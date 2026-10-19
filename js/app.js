@@ -2894,36 +2894,135 @@ function getWeatherDescription(code) {
 }
 
 function getWeatherIcon(code, isDay = 1) {
+  const svg = content => `
+    <svg
+      class="weather-svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      ${content}
+    </svg>
+  `;
+
+  const cloud = `
+    <path
+      d="M6.5 18.5h10.3a3.7 3.7 0 0 0 .6-7.35A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0-.5 9Z"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  `;
+
   if (code === 0) {
-    return isDay ? "☀" : "☾";
+    if (isDay) {
+      return svg(`
+        <circle
+          cx="12"
+          cy="12"
+          r="3.5"
+          stroke="currentColor"
+          stroke-width="1.7"
+        />
+
+        <path
+          d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+        />
+      `);
+    }
+
+    return svg(`
+      <path
+        d="M20 15.5A8 8 0 0 1 8.5 4 8 8 0 1 0 20 15.5Z"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linejoin="round"
+      />
+    `);
   }
 
   if ([1, 2, 3].includes(code)) {
-    return "☁";
+    return svg(`
+      <circle
+        cx="8"
+        cy="7"
+        r="2.8"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+
+      ${cloud}
+    `);
   }
 
   if ([45, 48].includes(code)) {
-    return "◌";
+    return svg(`
+      <path
+        d="M4 8h16M3 12h18M5 16h14"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+      />
+    `);
   }
 
   if (
-    [51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82]
-      .includes(code)
+    [
+      51, 53, 55,
+      61, 63, 65,
+      66, 67,
+      80, 81, 82
+    ].includes(code)
   ) {
-    return "雨";
+    return svg(`
+      ${cloud}
+
+      <path
+        d="M8 20l-1 2M12 20l-1 2M16 20l-1 2"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+      />
+    `);
   }
 
-  if (
-    [71, 73, 75, 77, 85, 86].includes(code)
-  ) {
-    return "❄";
+  if ([71, 73, 75, 77, 85, 86].includes(code)) {
+    return svg(`
+      ${cloud}
+
+      <path
+        d="M8 20v3M6.5 21.5h3M6.9 20.4l2.2 2.2M9.1 20.4l-2.2 2.2"
+        stroke="currentColor"
+        stroke-width="1.3"
+        stroke-linecap="round"
+      />
+
+      <path
+        d="M16 20v3M14.5 21.5h3M14.9 20.4l2.2 2.2M17.1 20.4l-2.2 2.2"
+        stroke="currentColor"
+        stroke-width="1.3"
+        stroke-linecap="round"
+      />
+    `);
   }
 
   if ([95, 96, 99].includes(code)) {
-    return "ϟ";
+    return svg(`
+      ${cloud}
+
+      <path
+        d="M13 13h3l-4 8v-5H9l4-7v4Z"
+        fill="currentColor"
+      />
+    `);
   }
 
-  return "◌";
+  return svg(cloud);
 }
 
 function getNearestHourlyValue(
