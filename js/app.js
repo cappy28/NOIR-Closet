@@ -1041,7 +1041,11 @@ function getAvailableForSlot(slot) {
     const allowed =
       product.includeInOutfits !== false;
 
-    return correctCategory && allowed;
+    return (
+  correctCategory &&
+  allowed &&
+  !isProductInLaundry(product.id)
+);
   });
 }
 
