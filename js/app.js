@@ -2232,6 +2232,30 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+    
+    if (action === "toggle-favorite") {
+  const productId =
+    actionTarget.dataset.productId;
+
+  const product = getProduct(productId);
+
+  if (!product) {
+    return;
+  }
+
+  const isNowFavorite =
+    toggleFavorite(productId);
+
+  showToast(
+    isNowFavorite
+      ? "Ajouté aux favoris."
+      : "Retiré des favoris."
+  );
+
+  renderRoute();
+
+  return;
+}
 
     if (action === "edit-product") {
       const productId =
