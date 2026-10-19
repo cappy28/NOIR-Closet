@@ -1098,9 +1098,10 @@ function normalizeOutfitSelection() {
       getAvailableForSlot(slot);
 
     const valid =
-      current &&
-      slot.categories.includes(current.category) &&
-      current.includeInOutfits !== false;
+  current &&
+  slot.categories.includes(current.category) &&
+  current.includeInOutfits !== false &&
+  !isProductInLaundry(current.id);
 
     if (!valid) {
       state.outfit[slot.key] =
