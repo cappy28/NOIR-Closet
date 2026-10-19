@@ -6,6 +6,8 @@ const customProductsKey =
   "noir-closet-custom-products";
 const favoritesKey =
   "noir-closet-favorite-products";
+const laundryProductsKey =
+  "noir-closet-laundry-products";
 const editedProductsKey =
   "noir-closet-edited-products";
 const deletedProductsKey =
@@ -78,6 +80,8 @@ let searchFrame = 0;
 let editingProductId = null;
 let favoriteProductIds =
   loadFavoriteProductIds();
+let laundryProductIds =
+  loadLaundryProductIds();
 
 function loadSavedLooks() {
   try {
