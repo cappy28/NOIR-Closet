@@ -892,13 +892,32 @@ function renderProductDetail() {
               ${tags}
             </div>
 
-            <button
-              class="button-primary"
-              type="button"
-              data-use-product="${escapeHTML(product.id)}"
-            >
-              Créer une tenue avec cette pièce
-            </button>
+            <div
+  class="detail-actions"
+  style="
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  "
+>
+  <button
+    class="button-primary"
+    type="button"
+    data-use-product="${escapeHTML(product.id)}"
+  >
+    Créer une tenue avec cette pièce
+  </button>
+
+  <button
+    class="button-secondary button-danger"
+    type="button"
+    data-action="delete-product"
+    data-product-id="${escapeHTML(product.id)}"
+  >
+    Supprimer cette pièce
+  </button>
+</div>
+
           </div>
         </div>
 
