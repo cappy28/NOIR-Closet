@@ -1808,9 +1808,10 @@ async function handleAddPieceSubmit(event) {
 
     goTo("closet");
     showToast("Pièce ajoutée au dressing.");
-  } catch {
-    error.textContent =
-      "Impossible d'enregistrer cette image. Elle est peut-être trop lourde.";
+  } catch (problem) {
+  error.textContent =
+    problem.message ||
+    "Impossible de supprimer le fond de cette image.";
     error.hidden = false;
   }
   }
