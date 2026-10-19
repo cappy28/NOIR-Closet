@@ -80,8 +80,7 @@ let searchFrame = 0;
 let editingProductId = null;
 let favoriteProductIds =
   loadFavoriteProductIds();
-let laundryProductIds =
-  loadLaundryProductIds();
+let laundryProductIds = [];
 
 function loadSavedLooks() {
   try {
@@ -2821,6 +2820,8 @@ function init() {
   }
 
 loadCustomProducts();
+  laundryProductIds =
+  loadLaundryProductIds();
 applyEditedProducts();
 applyDeletedProducts();
 
