@@ -2602,6 +2602,7 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+    if (action === "toggle-favorite") {
     if (action === "toggle-laundry") {
   const productId =
     actionTarget.dataset.productId;
