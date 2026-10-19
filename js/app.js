@@ -1385,7 +1385,356 @@ function loadSavedLook(lookId) {
 
   goTo("outfits");
 }
+function loadCustomProducts() {
+  try {
+    const savedProducts = JSON.parse(
+      localStorage.getItem(customProductsKey) || "[]"
+    );
 
+    savedProducts.forEach(product => {
+      const alreadyExists = products.some(
+        item => item.id === product.id
+      );
+
+      if (!alreadyExists) {
+        products.push(product);
+      }
+    });
+  } catch {
+    // Aucun produit personnalisé enregistré
+  }
+}
+
+function saveCustomProducts() {
+  const customProducts = products.filter(
+    product => product.userCreated === true
+  );
+
+  localStorage.setItem(
+    customProductsKey,
+    JSON.stringify(customProducts)
+  );
+}
+
+function openAddPieceModal() {
+  const modal = document.getElementById("addPieceModal");
+
+  if (!modal) return;
+
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeAddPieceModal() {
+  const modal = document.getElementById("addPieceModal");
+
+  if (!modal) return;
+
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function createAddPieceModal() {
+  if (document.getElementById("addPieceModal")) {
+    return;
+  }
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div
+        class="add-piece-modal"
+        id="addPieceModal"
+        hidden
+      >
+        <div
+          class="add-piece-backdrop"
+          data-close-add-piece
+        ></div>
+
+        <section
+          class="add-piece-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="addPieceTitle"
+        >
+          <div class="add-piece-header">
+            <div>
+              <p class="eyebrow">NØIR CLOSET</p>
+
+              <h2 id="addPieceTitle">
+                Ajouter une pièce
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              class="add-piece-close"
+              data-close-add-piece
+            >
+              ×
+            </button>
+          </div>
+
+          <form id="addPieceForm">
+            <label class="add-piece-field">
+              <span>Photo</span>
+
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                required
+              />
+            </label>
+
+            <label class="add-piece-field">
+              <span>Nom du vêtement</span>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Ex : Hoodie noir"
+                required
+              />
+            </label>
+
+            <label class="add-piece-field">
+              <span>Marque</span>
+
+              <input
+                type="text"
+                name="brand"
+                placeholder="Ex : Bershka"
+                required
+              />
+            </label>
+
+            <label class="add-piece-field">
+              <span>Catégorie</span>
+
+              <select name="category" required>
+                <option value="top">Haut</option>
+                <option value="bottom">Bas</option>
+                <option value="jacket">Veste</option>
+                <option value="shoes">Chaussures</option>
+                <option value="accessory">Accessoire</option>
+                <option value="underwear">
+                  Sous-vêtement
+                </option>
+              </select>
+            </label>
+
+            <div class="add-piece-row">
+              <label class="add-piece-field">
+                <span>Taille</span>
+
+                <input
+                  type="text"
+                  name="size"
+                  placeholder="Ex : S, 42, unique"
+                  required
+                />
+              </label>
+
+              <label class="add-piece-field">
+                <span>Prix</span>
+
+                <input
+                  type="number"
+                  name="price"
+                  inputmode="decimal"
+                  min="0"
+                  step="0.01"
+                  placeholder="29.99"
+                  required
+                />
+              </label>
+            </div>
+
+            <label class="add-piece-field">
+              <span>Couleur principale</span>
+
+              <input
+                type="color"
+                name="color"
+                value="#222222"
+              />
+            </label>
+
+            <p
+              class="add-piece-error"
+              id="addPieceError"
+              hidden
+            ></p>
+
+            <button
+              class="button-primary"
+              type="submit"
+            >
+              Enregistrer dans mon dressing
+            </button>
+          </form>
+        </section>
+      </div>
+    `
+  );
+}
+
+function compressPieceImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = event => {
+      const image = new Image();
+
+      image.onload = () => {
+        const maxSize = 1200;
+
+        const ratio = Math.min(
+          1,
+          maxSize / image.width,
+          maxSize / image.height
+        );
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = Math.round(image.width * ratio);
+        canvas.height = Math.round(image.height * ratio);
+
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          reject(new Error("Canvas indisponible"));
+          return;
+        }
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        const imageData = canvas.toDataURL(
+          "image/webp",
+          0.85
+        );
+
+        resolve(imageData);
+      };
+
+      image.onerror = reject;
+      image.src = event.target.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleAddPieceSubmit(event) {
+  if (event.target.id !== "addPieceForm") {
+    return;
+  }
+
+  event.preventDefault();
+
+  const form = event.target;
+  const formData = new FormData(form);
+  const error = document.getElementById("addPieceError");
+
+  error.hidden = true;
+  error.textContent = "";
+
+  const imageFile = formData.get("image");
+  const name = String(
+    formData.get("name") || ""
+  ).trim();
+
+  const brand = String(
+    formData.get("brand") || ""
+  ).trim();
+
+  const category = String(
+    formData.get("category") || ""
+  );
+
+  const size = String(
+    formData.get("size") || ""
+  ).trim();
+
+  const price = Number(
+    String(formData.get("price") || "")
+      .replace(",", ".")
+  );
+
+  const color = String(
+    formData.get("color") || "#222222"
+  );
+
+  if (
+    !imageFile ||
+    !imageFile.type ||
+    !imageFile.type.startsWith("image/")
+  ) {
+    error.textContent =
+      "Sélectionne une image valide.";
+    error.hidden = false;
+    return;
+  }
+
+  if (!name || !brand || !category || !size) {
+    error.textContent =
+      "Remplis tous les champs.";
+    error.hidden = false;
+    return;
+  }
+
+  if (!Number.isFinite(price) || price < 0) {
+    error.textContent =
+      "Le prix n'est pas valide.";
+    error.hidden = false;
+    return;
+  }
+
+  try {
+    const image = await compressPieceImage(imageFile);
+
+    const product = {
+      id: `custom-${Date.now()}`,
+      name,
+      brand,
+      size,
+      price,
+      category,
+      image,
+      colors: [color],
+      styles: ["personnel"],
+      includeInOutfits: true,
+      quantity: 1,
+      userCreated: true
+    };
+
+    products.unshift(product);
+    saveCustomProducts();
+
+    form.reset();
+    closeAddPieceModal();
+
+    state.search = "";
+    state.category = "all";
+
+    goTo("closet");
+    showToast("Pièce ajoutée au dressing.");
+  } catch {
+    error.textContent =
+      "Impossible d'enregistrer cette image. Elle est peut-être trop lourde.";
+    error.hidden = false;
+  }
+  }
+      
 function handleClick(event) {
   const routeTarget =
     event.target.closest("[data-route]");
