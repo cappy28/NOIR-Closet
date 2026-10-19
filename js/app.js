@@ -1165,9 +1165,12 @@ function renderOutfitLab() {
             possèdes déjà.
           </p>
         </div>
-      </div>
+            </div>
+
+      <div id="weatherOutfitContext"></div>
 
       <div class="outfit-layout">
+
         <div class="panel outfit-controls">
           <div class="section-header">
             <div>
@@ -1205,6 +1208,7 @@ function renderOutfitLab() {
     </section>
   `;
 
+   renderWeatherOutfitContext();
   renderOutfitStage();
 }
 
