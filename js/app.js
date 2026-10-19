@@ -2497,6 +2497,51 @@ function toggleFavorite(productId) {
   return false;
 }
 
+function loadLaundryProductIds() {
+  try {
+    const savedLaundryProducts =
+      JSON.parse(
+        localStorage.getItem(
+          laundryProductsKey
+        ) || "[]"
+      );
+
+    return Array.isArray(savedLaundryProducts)
+      ? savedLaundryProducts
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLaundryProductIds() {
+  localStorage.setItem(
+    laundryProductsKey,
+    JSON.stringify(laundryProductIds)
+  );
+}
+
+function isProductInLaundry(productId) {
+  return laundryProductIds.includes(productId);
+}
+
+function toggleLaundryStatus(productId) {
+  const laundryIndex =
+    laundryProductIds.indexOf(productId);
+
+  if (laundryIndex === -1) {
+    laundryProductIds.push(productId);
+    saveLaundryProductIds();
+
+    return true;
+  }
+
+  laundryProductIds.splice(laundryIndex, 1);
+  saveLaundryProductIds();
+
+  return false;
+}
+
 function handleClick(event) {
   const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
