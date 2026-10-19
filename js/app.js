@@ -2602,6 +2602,29 @@ function handleClick(event) {
 
     const action =
       actionTarget.dataset.action;
+    if (action === "toggle-laundry") {
+  const productId =
+    actionTarget.dataset.productId;
+
+  const product = getProduct(productId);
+
+  if (!product) {
+    return;
+  }
+
+  const isNowInLaundry =
+    toggleLaundryStatus(productId);
+
+  showToast(
+    isNowInLaundry
+      ? "Pièce placée au sale."
+      : "Pièce remise propre."
+  );
+
+  renderRoute();
+
+  return;
+}
     
     if (action === "toggle-favorite") {
   const productId =
