@@ -2517,3 +2517,21 @@ body.modal-open {
     font-size: 23px;
   }
 }
+.button-danger {
+  color: #e2e5e8 !important;
+  border-color: rgba(255, 255, 255, .35) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, .11),
+      rgba(255, 255, 255, .035)
+    ) !important;
+}
+
+.button-danger:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 170, 170, .8) !important;
+  box-shadow:
+    0 0 24px rgba(255, 100, 100, .14),
+    inset 0 1px rgba(255, 255, 255, .35);
+}
