@@ -3212,6 +3212,224 @@ function renderWeatherPanel() {
   `;
 }
 
+function getWeatherOutfitPlan(day) {
+  const minimum = Number(
+    day.apparentTemperatureMin ??
+      day.temperatureMin ??
+      20
+  );
+
+  const maximum = Number(
+    day.apparentTemperatureMax ??
+      day.temperatureMax ??
+      minimum
+  );
+
+  const rainProbability = Number(
+    day.precipitationProbability || 0
+  );
+
+  const precipitation = Number(
+    day.precipitation || 0
+  );
+
+  const windSpeed = Number(
+    day.windSpeed || 0
+  );
+
+  const weatherCode = Number(
+    day.weatherCode || 0
+  );
+
+  const snowyCodes = [
+    71, 73, 75,
+    77, 85, 86
+  ];
+
+  const stormCodes = [
+    95, 96, 99
+  ];
+
+  const rainyCodes = [
+    51, 53, 55,
+    61, 63, 65,
+    66, 67,
+    80, 81, 82,
+    95, 96, 99
+  ];
+
+  const rainy =
+    rainProbability >= 40 ||
+    precipitation > 0.1 ||
+    rainyCodes.includes(weatherCode);
+
+  const snowy =
+    snowyCodes.includes(weatherCode);
+
+  const stormy =
+    stormCodes.includes(weatherCode);
+
+  const windy = windSpeed >= 30;
+
+  const needsJacket =
+    minimum <= 17 ||
+    rainy ||
+    windy ||
+    snowy;
+
+  const needsAccessory =
+    minimum <= 10 ||
+    snowy;
+
+  let title = "Tenue confortable";
+
+  if (minimum <= 5) {
+    title = "Tenue très chaude";
+  } else if (minimum <= 12) {
+    title = "Tenue chaude";
+  } else if (maximum >= 27) {
+    title = "Tenue légère";
+  } else if (rainy) {
+    title = "Tenue protégée de la pluie";
+  }
+
+  return {
+    title,
+    minimum,
+    maximum,
+    rainy,
+    snowy,
+    stormy,
+    windy,
+    needsJacket,
+    needsAccessory
+  };
+}
+
+function generateWeatherOutfit(
+  forecastIndex = 0
+) {
+  const forecast =
+    weatherState.data?.forecast || [];
+
+  const day = forecast[forecastIndex];
+
+  if (!day) {
+    showToast(
+      "Les prévisions météo ne sont pas disponibles."
+    );
+
+    return;
+  }
+
+  const plan =
+    getWeatherOutfitPlan(day);
+
+  const nextOutfit = {
+    ...state.outfit
+  };
+
+  const selectedProducts = [];
+
+  /*
+    Les pièces verrouillées sont conservées
+    uniquement si elles sont propres.
+  */
+  outfitSlots.forEach(slot => {
+    const isLocked =
+      state.lockedOutfitSlots[slot.key] === true;
+
+    if (!isLocked) {
+      return;
+    }
+
+    const lockedProduct =
+      getProduct(state.outfit[slot.key]);
+
+    if (
+      lockedProduct &&
+      !isProductInLaundry(lockedProduct.id)
+    ) {
+      selectedProducts.push(lockedProduct);
+    } else {
+      nextOutfit[slot.key] = "";
+    }
+  });
+
+  const requiredSlots = new Set([
+    "top",
+    "bottom",
+    "shoes"
+  ]);
+
+  if (plan.needsJacket) {
+    requiredSlots.add("jacket");
+  }
+
+  if (plan.needsAccessory) {
+    requiredSlots.add("accessory");
+  }
+
+  outfitSlots.forEach(slot => {
+    const isLocked =
+      state.lockedOutfitSlots[slot.key] === true;
+
+    if (isLocked) {
+      return;
+    }
+
+    if (!requiredSlots.has(slot.key)) {
+      nextOutfit[slot.key] = "";
+      return;
+    }
+
+    const available =
+      getAvailableForSlot(slot);
+
+    const withoutDuplicates =
+      available.filter(product => {
+        return !selectedProducts.some(
+          selected =>
+            selected.id === product.id
+        );
+      });
+
+    const candidates =
+      withoutDuplicates.length
+        ? withoutDuplicates
+        : available;
+
+    const chosen =
+      chooseSmartProduct(
+        candidates,
+        selectedProducts
+      );
+
+    nextOutfit[slot.key] =
+      chosen?.id || "";
+
+    if (chosen) {
+      selectedProducts.push(chosen);
+    }
+  });
+
+  state.outfit = {
+    ...state.outfit,
+    ...nextOutfit
+  };
+
+  goTo("outfits");
+
+  window.setTimeout(() => {
+    showToast(
+      `${plan.title} générée pour ${formatForecastDay(
+        day.date,
+        forecastIndex
+      )}.`
+    );
+  }, 250);
+}
+
 function handleClick(event) {
   const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
