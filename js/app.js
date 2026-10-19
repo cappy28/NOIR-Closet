@@ -4,6 +4,8 @@ const app = document.getElementById("app");
 const savedLooksKey = "noir-closet-saved-looks";
 const customProductsKey =
   "noir-closet-custom-products";
+const deletedProductsKey =
+  "noir-closet-deleted-products";
 
 const categoryLabels = {
   top: "Haut",
