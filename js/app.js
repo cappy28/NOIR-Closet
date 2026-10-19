@@ -3072,6 +3072,7 @@ function renderWeatherPanel() {
     `;
 
     return;
+
   }
 
   if (weatherState.status === "loading") {
@@ -3323,6 +3324,9 @@ function generateWeatherOutfit(
 
     return;
   }
+
+  weatherState.selectedForecastIndex =
+    forecastIndex;
 
   const plan =
     getWeatherOutfitPlan(day);
