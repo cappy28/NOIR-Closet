@@ -2535,3 +2535,117 @@ body.modal-open {
     0 0 24px rgba(255, 100, 100, .14),
     inset 0 1px rgba(255, 255, 255, .35);
 }
+/* =========================================================
+   FAVORIS
+   ========================================================= */
+
+.product-card {
+  position: relative;
+}
+
+.favorite-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+
+  display: grid;
+  place-items: center;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: 50%;
+
+  color: #f2f4f5;
+  font-size: 20px;
+  line-height: 1;
+
+  background: rgba(10, 11, 12, .62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  cursor: pointer;
+  transition:
+    transform .25s ease,
+    color .25s ease,
+    border-color .25s ease,
+    background .25s ease,
+    box-shadow .25s ease;
+}
+
+.favorite-toggle:hover {
+  transform: scale(1.12);
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, .16);
+}
+
+.favorite-toggle:active {
+  transform: scale(.88);
+}
+
+.favorite-toggle.is-favorite {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, .8);
+
+  background:
+    linear-gradient(
+      135deg,
+      #4b545b,
+      #ffffff 45%,
+      #737d84
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, .22),
+    inset 0 1px rgba(255, 255, 255, .9);
+}
+
+.favorite-toggle.is-favorite span {
+  color: #111315;
+  animation: favoritePop .35s ease both;
+}
+
+@keyframes favoritePop {
+  0% {
+    transform: scale(.55);
+  }
+
+  65% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.favorite-detail-button {
+  min-width: 170px;
+}
+
+.favorite-detail-button[aria-pressed="true"] {
+  color: #101214 !important;
+  border-color: rgba(255, 255, 255, .75) !important;
+
+  background:
+    linear-gradient(
+      120deg,
+      #4b545b,
+      #ffffff 30%,
+      #9da6ac 52%,
+      #ffffff 72%,
+      #3d454b
+    ) !important;
+}
+
+@media (max-width: 860px) {
+  .favorite-toggle {
+    top: 9px;
+    right: 9px;
+    width: 34px;
+    height: 34px;
+  }
+}
