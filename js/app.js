@@ -2578,6 +2578,494 @@ function toggleLaundryStatus(productId) {
   return false;
 }
 
+function getWeatherDescription(code) {
+  const descriptions = {
+    0: "Ciel dégagé",
+    1: "Peu nuageux",
+    2: "Partiellement nuageux",
+    3: "Couvert",
+    45: "Brouillard",
+    48: "Brouillard givrant",
+    51: "Bruine légère",
+    53: "Bruine",
+    55: "Bruine forte",
+    61: "Pluie légère",
+    63: "Pluie modérée",
+    65: "Forte pluie",
+    66: "Pluie verglaçante",
+    67: "Forte pluie verglaçante",
+    71: "Neige légère",
+    73: "Neige modérée",
+    75: "Forte neige",
+    77: "Grains de neige",
+    80: "Averses légères",
+    81: "Averses modérées",
+    82: "Fortes averses",
+    85: "Averses de neige",
+    86: "Fortes averses de neige",
+    95: "Orage",
+    96: "Orage avec grêle",
+    99: "Fort orage avec grêle"
+  };
+
+  return descriptions[code] || "Conditions variables";
+}
+
+function getWeatherIcon(code, isDay = 1) {
+  if (code === 0) {
+    return isDay ? "☀" : "☾";
+  }
+
+  if ([1, 2, 3].includes(code)) {
+    return "☁";
+  }
+
+  if ([45, 48].includes(code)) {
+    return "◌";
+  }
+
+  if (
+    [51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82]
+      .includes(code)
+  ) {
+    return "雨";
+  }
+
+  if (
+    [71, 73, 75, 77, 85, 86].includes(code)
+  ) {
+    return "❄";
+  }
+
+  if ([95, 96, 99].includes(code)) {
+    return "ϟ";
+  }
+
+  return "◌";
+}
+
+function getNearestHourlyValue(
+  hourly,
+  targetTime,
+  key
+) {
+  if (
+    !hourly ||
+    !Array.isArray(hourly.time) ||
+    !Array.isArray(hourly[key]) ||
+    !hourly.time.length
+  ) {
+    return null;
+  }
+
+  let index = hourly.time.indexOf(targetTime);
+
+  if (index === -1) {
+    const targetTimestamp =
+      new Date(targetTime).getTime();
+
+    index = hourly.time.reduce(
+      (bestIndex, value, currentIndex) => {
+        const bestDistance = Math.abs(
+          new Date(
+            hourly.time[bestIndex]
+          ).getTime() - targetTimestamp
+        );
+
+        const currentDistance = Math.abs(
+          new Date(value).getTime() -
+            targetTimestamp
+        );
+
+        return currentDistance < bestDistance
+          ? currentIndex
+          : bestIndex;
+      },
+      0
+    );
+  }
+
+  return hourly[key][index] ?? null;
+}
+
+function getWeatherAdvice(data) {
+  const apparentTemperature = Number(
+    data.apparentTemperature ??
+      data.temperature ??
+      20
+  );
+
+  const precipitationProbability = Number(
+    data.precipitationProbability || 0
+  );
+
+  const precipitation = Number(
+    data.precipitation || 0
+  );
+
+  const windSpeed = Number(
+    data.windSpeed || 0
+  );
+
+  const weatherCode = Number(
+    data.weatherCode
+  );
+
+  const rainyCodes = [
+    51, 53, 55,
+    61, 63, 65,
+    66, 67,
+    80, 81, 82,
+    95, 96, 99
+  ];
+
+  const rainy =
+    precipitation > 0.1 ||
+    precipitationProbability >= 40 ||
+    rainyCodes.includes(weatherCode);
+
+  const windy = windSpeed >= 30;
+
+  let title = "Tenue légère";
+  let text =
+    "Une tenue confortable devrait suffire aujourd'hui.";
+  let needsJacket = false;
+  let needsAccessory = false;
+
+  if (apparentTemperature <= 5) {
+    title = "Tenue très chaude";
+    text =
+      "Privilégie plusieurs couches, une veste chaude et un accessoire couvrant.";
+    needsJacket = true;
+    needsAccessory = true;
+  } else if (apparentTemperature <= 12) {
+    title = "Tenue chaude";
+    text =
+      "Un haut chaud avec une veste est recommandé.";
+    needsJacket = true;
+    needsAccessory = true;
+  } else if (apparentTemperature <= 18) {
+    title = "Tenue intermédiaire";
+    text =
+      "Prévois une couche supplémentaire, surtout le matin et le soir.";
+    needsJacket = true;
+  } else if (apparentTemperature >= 27) {
+    title = "Tenue légère et respirante";
+    text =
+      "Choisis des vêtements légers et évite les superpositions.";
+  } else {
+    title = "Tenue confortable";
+    text =
+      "Un haut confortable devrait convenir avec une couche légère si nécessaire.";
+  }
+
+  if (rainy) {
+    text +=
+      " Une protection contre la pluie est conseillée.";
+    needsJacket = true;
+  }
+
+  if (windy) {
+    text +=
+      " Le vent risque de rafraîchir la température ressentie.";
+    needsJacket = true;
+  }
+
+  return {
+    title,
+    text,
+    needsJacket,
+    needsAccessory,
+    rainy,
+    windy
+  };
+}
+
+async function loadWeather() {
+  if (!navigator.geolocation) {
+    weatherState.status = "error";
+    weatherState.error =
+      "La géolocalisation n'est pas disponible sur cet appareil.";
+    renderRoute();
+    return;
+  }
+
+  weatherState.status = "loading";
+  weatherState.error = "";
+  renderRoute();
+
+  navigator.geolocation.getCurrentPosition(
+    async position => {
+      try {
+        const latitude =
+          position.coords.latitude;
+
+        const longitude =
+          position.coords.longitude;
+
+        const weatherUrl = new URL(
+          "https://api.open-meteo.com/v1/forecast"
+        );
+
+        weatherUrl.search =
+          new URLSearchParams({
+            latitude: latitude.toFixed(4),
+            longitude: longitude.toFixed(4),
+            current:
+              "temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day",
+            hourly:
+              "precipitation_probability",
+            forecast_days: "1",
+            timezone: "auto"
+          }).toString();
+
+        const response = await fetch(weatherUrl);
+
+        if (!response.ok) {
+          throw new Error(
+            "Impossible de récupérer la météo."
+          );
+        }
+
+        const result = await response.json();
+
+        if (!result.current) {
+          throw new Error(
+            "Les données météo sont incomplètes."
+          );
+        }
+
+        const current = result.current;
+
+        weatherState.data = {
+          latitude,
+          longitude,
+          timezone: result.timezone,
+          updatedAt: current.time,
+          temperature: current.temperature_2m,
+          apparentTemperature:
+            current.apparent_temperature,
+          precipitation:
+            current.precipitation || 0,
+          precipitationProbability:
+            getNearestHourlyValue(
+              result.hourly,
+              current.time,
+              "precipitation_probability"
+            ) || 0,
+          weatherCode: current.weather_code,
+          windSpeed: current.wind_speed_10m,
+          isDay: current.is_day
+        };
+
+        weatherState.status = "ready";
+        weatherState.error = "";
+
+        renderRoute();
+        showToast("Météo actualisée.");
+      } catch (error) {
+        weatherState.status = "error";
+        weatherState.error =
+          error.message ||
+          "Impossible de récupérer la météo.";
+        renderRoute();
+      }
+    },
+    error => {
+      const messages = {
+        1:
+          "Autorise la localisation pour utiliser la météo.",
+        2:
+          "Ta position est indisponible.",
+        3:
+          "La localisation a pris trop de temps."
+      };
+
+      weatherState.status = "error";
+      weatherState.error =
+        messages[error.code] ||
+        "Impossible de récupérer ta position.";
+
+      renderRoute();
+    },
+    {
+      enableHighAccuracy: false,
+      timeout: 10000,
+      maximumAge: 15 * 60 * 1000
+    }
+  );
+}
+
+function renderWeatherPanel() {
+  const panel =
+    document.getElementById("weatherPanel");
+
+  if (!panel) return;
+
+  if (weatherState.status === "idle") {
+    panel.innerHTML = `
+      <section class="weather-card weather-idle">
+        <div class="weather-card-content">
+          <div class="eyebrow">
+            Weather wardrobe system
+          </div>
+
+          <h2>
+            S'habiller selon la météo
+          </h2>
+
+          <p>
+            Autorise ta position pour obtenir un conseil
+            vestimentaire adapté à la température actuelle.
+          </p>
+
+          <button
+            class="button-secondary"
+            type="button"
+            data-action="load-weather"
+          >
+            Activer la météo
+          </button>
+        </div>
+
+        <div class="weather-symbol">
+          ◌
+        </div>
+      </section>
+    `;
+
+    return;
+  }
+
+  if (weatherState.status === "loading") {
+    panel.innerHTML = `
+      <section class="weather-card weather-loading">
+        <div>
+          <div class="eyebrow">
+            Weather wardrobe system
+          </div>
+
+          <h2>
+            Analyse de la météo...
+          </h2>
+
+          <p>
+            Récupération de ta position et des conditions
+            actuelles.
+          </p>
+        </div>
+
+        <div class="weather-loader"></div>
+      </section>
+    `;
+
+    return;
+  }
+
+  if (weatherState.status === "error") {
+    panel.innerHTML = `
+      <section class="weather-card weather-error">
+        <div>
+          <div class="eyebrow">
+            Weather wardrobe system
+          </div>
+
+          <h2>
+            Météo indisponible
+          </h2>
+
+          <p>
+            ${escapeHTML(weatherState.error)}
+          </p>
+
+          <button
+            class="button-secondary"
+            type="button"
+            data-action="load-weather"
+          >
+            Réessayer
+          </button>
+        </div>
+      </section>
+    `;
+
+    return;
+  }
+
+  const data = weatherState.data;
+  const advice = getWeatherAdvice(data);
+
+  panel.innerHTML = `
+    <section class="weather-card weather-ready">
+      <div class="weather-card-top">
+        <div>
+          <div class="eyebrow">
+            Weather wardrobe system
+          </div>
+
+          <h2>
+            ${escapeHTML(advice.title)}
+          </h2>
+
+          <p>
+            ${escapeHTML(
+              getWeatherDescription(data.weatherCode)
+            )}
+          </p>
+        </div>
+
+        <div class="weather-temperature">
+          <span class="weather-icon">
+            ${getWeatherIcon(
+              data.weatherCode,
+              data.isDay
+            )}
+          </span>
+
+          ${Math.round(data.temperature)}°
+        </div>
+      </div>
+
+      <div class="weather-facts">
+        <div>
+          <span>Ressenti</span>
+          <strong>
+            ${Math.round(data.apparentTemperature)}°
+          </strong>
+        </div>
+
+        <div>
+          <span>Pluie</span>
+          <strong>
+            ${Math.round(
+              data.precipitationProbability
+            )}%
+          </strong>
+        </div>
+
+        <div>
+          <span>Vent</span>
+          <strong>
+            ${Math.round(data.windSpeed)} km/h
+          </strong>
+        </div>
+      </div>
+
+      <p class="weather-advice">
+        ${escapeHTML(advice.text)}
+      </p>
+
+      <button
+        class="button-secondary"
+        type="button"
+        data-action="load-weather"
+      >
+        Actualiser la météo
+      </button>
+    </section>
+  `;
+}
+
 function handleClick(event) {
   const closeAddPiece =
     event.target.closest("[data-close-add-piece]");
