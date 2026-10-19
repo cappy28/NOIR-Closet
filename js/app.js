@@ -81,6 +81,11 @@ let editingProductId = null;
 let favoriteProductIds =
   loadFavoriteProductIds();
 let laundryProductIds = [];
+const weatherState = {
+  status: "idle",
+  data: null,
+  error: ""
+};
 
 function loadSavedLooks() {
   try {
