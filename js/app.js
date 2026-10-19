@@ -1612,6 +1612,42 @@ function chooseSmartProduct(
   return bestProducts[randomIndex].product;
 }
 
+function generateRandomOutfit() {
+  const selectedProducts = [];
+  const nextOutfit = {};
+
+  outfitSlots.forEach(slot => {
+    const availableProducts =
+      getAvailableForSlot(slot);
+
+    const chosenProduct =
+      chooseSmartProduct(
+        availableProducts,
+        selectedProducts
+      );
+
+    nextOutfit[slot.key] =
+      chosenProduct?.id || "";
+
+    if (chosenProduct) {
+      selectedProducts.push(
+        chosenProduct
+      );
+    }
+  });
+
+  state.outfit = {
+    ...state.outfit,
+    ...nextOutfit
+  };
+
+  renderOutfitLab();
+
+  showToast(
+    "Look harmonisé généré."
+  );
+}
+
 function saveCurrentOutfit() {
   const items = getSelectedOutfitProducts()
     .map(product => product.id);
