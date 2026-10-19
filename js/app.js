@@ -946,6 +946,20 @@ function renderProductDetail() {
   >
     Créer une tenue avec cette pièce
   </button>
+  
+<button
+  class="button-secondary favorite-detail-button"
+  type="button"
+  data-action="toggle-favorite"
+  data-product-id="${escapeHTML(product.id)}"
+  aria-pressed="${isFavorite(product.id)}"
+>
+  ${
+    isFavorite(product.id)
+      ? "♥ Dans mes favoris"
+      : "♡ Ajouter aux favoris"
+  }
+</button>
 
   <button
     class="button-secondary"
