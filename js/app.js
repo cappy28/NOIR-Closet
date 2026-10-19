@@ -3186,9 +3186,20 @@ function renderWeatherPanel() {
         </div>
       </div>
 
-      <p class="weather-advice">
+            <p class="weather-advice">
         ${escapeHTML(advice.text)}
       </p>
+
+      ${renderWeatherForecast(data.forecast)}
+
+      <button
+        class="button-primary"
+        type="button"
+        data-action="generate-weather-outfit"
+        data-forecast-index="0"
+      >
+        Créer la tenue d'aujourd'hui
+      </button>
 
       <button
         class="button-secondary"
