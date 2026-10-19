@@ -1815,12 +1815,19 @@ async function handleAddPieceSubmit(event) {
 
   const form = event.target;
   const formData = new FormData(form);
-  const error = document.getElementById("addPieceError");
+  const error = document.getElementById(
+    "addPieceError"
+  );
 
-  error.hidden = true;
-  error.textContent = "";
+  const currentProduct = editingProductId
+    ? getProduct(editingProductId)
+    : null;
 
   const imageFile = formData.get("image");
+  const hasNewImage =
+    imageFile instanceof File &&
+    imageFile.size > 0;
+
   const name = String(
     formData.get("name") || ""
   ).trim();
@@ -1846,9 +1853,18 @@ async function handleAddPieceSubmit(event) {
     formData.get("color") || "#222222"
   );
 
+  error.hidden = true;
+  error.textContent = "";
+
+  if (!currentProduct && !hasNewImage) {
+    error.textContent =
+      "Sélectionne une image.";
+    error.hidden = false;
+    return;
+  }
+
   if (
-    !imageFile ||
-    !imageFile.type ||
+    hasNewImage &&
     !imageFile.type.startsWith("image/")
   ) {
     error.textContent =
@@ -1872,23 +1888,76 @@ async function handleAddPieceSubmit(event) {
   }
 
   try {
-    const image =
-  await removeBackgroundAndCompress(imageFile);
+    let image = currentProduct?.image || "";
 
-    const product = {
-      id: `custom-${Date.now()}`,
-      name,
-      brand,
-      size,
-      price,
-      category,
-      image,
-      colors: [color],
-      styles: ["personnel"],
-      includeInOutfits: true,
-      quantity: 1,
-      userCreated: true
-    };
+    /*
+      L'API remove.bg est utilisée seulement
+      si une nouvelle photo est sélectionnée.
+    */
+    if (hasNewImage) {
+      image =
+        await removeBackgroundAndCompress(
+          imageFile
+        );
+    }
+
+    const product = currentProduct
+      ? {
+          ...currentProduct,
+          name,
+          brand,
+          category,
+          size,
+          price,
+          image,
+          colors: [color]
+        }
+      : {
+          id: `custom-${Date.now()}`,
+          name,
+          brand,
+          category,
+          size,
+          price,
+          originalPrice: null,
+          image,
+          colors: [color],
+          styles: ["personnel"],
+          includeInOutfits: true,
+          quantity: 1,
+          userCreated: true
+        };
+
+    if (currentProduct) {
+      const productIndex = products.findIndex(
+        item => item.id === currentProduct.id
+      );
+
+      if (productIndex === -1) {
+        throw new Error(
+          "Cette pièce n'existe plus."
+        );
+      }
+
+      products[productIndex] = product;
+
+      if (product.userCreated === true) {
+        removeEditedProduct(product.id);
+        saveCustomProducts();
+      } else {
+        saveEditedProduct(product);
+      }
+
+      form.reset();
+      closeAddPieceModal();
+
+      editingProductId = null;
+
+      goTo("product", product.id);
+      showToast("Pièce modifiée.");
+
+      return;
+    }
 
     products.unshift(product);
     saveCustomProducts();
@@ -1896,19 +1965,22 @@ async function handleAddPieceSubmit(event) {
     form.reset();
     closeAddPieceModal();
 
+    editingProductId = null;
     state.search = "";
     state.category = "all";
 
     goTo("closet");
     showToast("Pièce ajoutée au dressing.");
   } catch (problem) {
-  error.textContent =
-    problem.message ||
-    "Impossible de supprimer le fond de cette image.";
+    error.textContent =
+      problem.message ||
+      "Impossible d'enregistrer cette pièce.";
+
     error.hidden = false;
   }
-  }
-  function getDeletedProductIds() {
+}
+
+function getDeletedProductIds() {
   try {
     const deletedIds = JSON.parse(
       localStorage.getItem(deletedProductsKey) || "[]"
