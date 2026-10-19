@@ -2,6 +2,8 @@ import { products } from "../data/products.js";
 
 const app = document.getElementById("app");
 const savedLooksKey = "noir-closet-saved-looks";
+const customProductsKey =
+  "noir-closet-custom-products";
 
 const categoryLabels = {
   top: "Haut",
