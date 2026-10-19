@@ -610,13 +610,30 @@ function renderCloset() {
           </p>
         </div>
 
-        <button
-          class="button-primary"
-          type="button"
-          data-route="outfits"
-        >
-          Créer une tenue
-        </button>
+        <div
+  style="
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  "
+>
+  <button
+    class="button-secondary"
+    type="button"
+    data-action="open-add-piece"
+  >
+    + Ajouter une pièce
+  </button>
+
+  <button
+    class="button-primary"
+    type="button"
+    data-route="outfits"
+  >
+    Créer une tenue
+  </button>
+</div>
+
       </div>
 
       <div class="closet-controls">
