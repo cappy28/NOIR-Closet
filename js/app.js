@@ -232,6 +232,8 @@ function productMedia(product, extraClass = "") {
 
 function productCard(product) {
   const favorite = isFavorite(product.id);
+  const inLaundry =
+  isProductInLaundry(product.id);
 
   return `
     <article
@@ -273,6 +275,20 @@ function productCard(product) {
         <div class="product-price">
           ${formatPrice(product.price)}
         </div>
+        <button
+  class="laundry-toggle ${
+    inLaundry ? "is-laundry" : ""
+  }"
+  type="button"
+  data-action="toggle-laundry"
+  data-product-id="${escapeHTML(product.id)}"
+>
+  ${
+    inLaundry
+      ? "À la machine à laver"
+      : "Disponible"
+  }
+</button>
       </div>
     </article>
   `;
