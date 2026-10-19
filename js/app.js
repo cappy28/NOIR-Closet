@@ -1423,6 +1423,54 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2400);
 }
+function normalizeColor(color) {
+  const value = safeColor(
+    color,
+    "#222222"
+  ).replace("#", "");
+
+  if (value.length === 3) {
+    return value
+      .split("")
+      .map(char => char + char)
+      .join("");
+  }
+
+  return value.slice(0, 6);
+}
+
+function colorToRgb(color) {
+  const value = normalizeColor(color);
+
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  };
+}
+
+function isNeutralRgb(rgb) {
+  const maximum = Math.max(
+    rgb.r,
+    rgb.g,
+    rgb.b
+  );
+
+  const minimum = Math.min(
+    rgb.r,
+    rgb.g,
+    rgb.b
+  );
+
+  const brightness =
+    (rgb.r + rgb.g + rgb.b) / 3;
+
+  return (
+    maximum - minimum <  thirty ||
+    brightness < 45 ||
+    brightness > 220
+  );
+}
 
 function generateRandomOutfit() {
   outfitSlots.forEach(slot => {
