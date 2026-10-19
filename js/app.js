@@ -2785,6 +2785,43 @@ function getWeatherAdvice(data) {
   };
 }
 
+function buildWeatherForecast(daily) {
+  if (
+    !daily ||
+    !Array.isArray(daily.time)
+  ) {
+    return [];
+  }
+
+  return daily.time.map((date, index) => ({
+    date,
+
+    temperatureMax:
+      daily.temperature_2m_max?.[index] ?? null,
+
+    temperatureMin:
+      daily.temperature_2m_min?.[index] ?? null,
+
+    apparentTemperatureMax:
+      daily.apparent_temperature_max?.[index] ?? null,
+
+    apparentTemperatureMin:
+      daily.apparent_temperature_min?.[index] ?? null,
+
+    precipitationProbability:
+      daily.precipitation_probability_max?.[index] ?? 0,
+
+    precipitation:
+      daily.precipitation_sum?.[index] ?? 0,
+
+    weatherCode:
+      daily.weather_code?.[index] ?? 0,
+
+    windSpeed:
+      daily.wind_speed_10m_max?.[index] ?? 0
+  }));
+}
+
 async function loadWeather() {
   if (!navigator.geolocation) {
     weatherState.status = "error";
