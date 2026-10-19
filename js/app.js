@@ -1601,58 +1601,117 @@ function createAddPieceModal() {
   );
 }
 
-function compressPieceImage(file) {
+async function removeBackgroundAndCompress(file) {
+  const formData = new FormData();
+
+  formData.append(
+    "image_file",
+    file,
+    file.name || "piece.png"
+  );
+
+  const response = await fetch(
+    removeBgWorkerUrl,
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  if (!response.ok) {
+    let details = "";
+
+    try {
+      details = await response.text();
+    } catch {
+      details = "";
+    }
+
+    throw new Error(
+      `Erreur remove.bg (${response.status}) ${details}`
+    );
+  }
+
+  const removedBackgroundImage =
+    await response.blob();
+
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const objectUrl = URL.createObjectURL(
+      removedBackgroundImage
+    );
 
-    reader.onload = event => {
-      const image = new Image();
+    const image = new Image();
 
-      image.onload = () => {
-        const maxSize = 1200;
+    image.onload = () => {
+      const maxSize = 1200;
 
-        const ratio = Math.min(
-          1,
-          maxSize / image.width,
-          maxSize / image.height
-        );
+      const ratio = Math.min(
+        1,
+        maxSize / image.width,
+        maxSize / image.height
+      );
 
-        const canvas = document.createElement("canvas");
+      const canvas = document.createElement(
+        "canvas"
+      );
 
-        canvas.width = Math.round(image.width * ratio);
-        canvas.height = Math.round(image.height * ratio);
+      canvas.width = Math.max(
+        1,
+        Math.round(image.width * ratio)
+      );
 
-        const context = canvas.getContext("2d");
+      canvas.height = Math.max(
+        1,
+        Math.round(image.height * ratio)
+      );
 
-        if (!context) {
-          reject(new Error("Canvas indisponible"));
-          return;
-        }
+      const context = canvas.getContext("2d");
 
-        context.drawImage(
-          image,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
+      if (!context) {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Canvas indisponible"));
+        return;
+      }
 
-        const imageData = canvas.toDataURL(
+      context.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      context.drawImage(
+        image,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      URL.revokeObjectURL(objectUrl);
+
+      resolve(
+        canvas.toDataURL(
           "image/webp",
-          0.85
-        );
-
-        resolve(imageData);
-      };
-
-      image.onerror = reject;
-      image.src = event.target.result;
+          0.86
+        )
+      );
     };
 
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      reject(
+        new Error(
+          "Impossible de charger l'image supprimée"
+        )
+      );
+    };
+
+    image.src = objectUrl;
   });
 }
+
 
 async function handleAddPieceSubmit(event) {
   if (event.target.id !== "addPieceForm") {
