@@ -3455,6 +3455,15 @@ function handleClick(event) {
     const action =
       actionTarget.dataset.action;
 
+    if (action === "generate-weather-outfit") {
+  const forecastIndex = Number(
+    actionTarget.dataset.forecastIndex || 0
+  );
+
+  generateWeatherOutfit(forecastIndex);
+  return;
+}
+
     if (action === "load-weather") {
   loadWeather();
   return;
