@@ -1779,7 +1779,8 @@ async function handleAddPieceSubmit(event) {
   }
 
   try {
-    const image = await compressPieceImage(imageFile);
+    const image =
+  await removeBackgroundAndCompress(imageFile);
 
     const product = {
       id: `custom-${Date.now()}`,
