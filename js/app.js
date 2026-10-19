@@ -1460,12 +1460,80 @@ function saveCustomProducts() {
   );
 }
 
-function openAddPieceModal() {
-  const modal = document.getElementById("addPieceModal");
+function openAddPieceModal(productId = null) {
+  const modal = document.getElementById(
+    "addPieceModal"
+  );
 
-  if (!modal) return;
+  const form = document.getElementById(
+    "addPieceForm"
+  );
+
+  const title = document.getElementById(
+    "addPieceTitle"
+  );
+
+  const submitButton = document.getElementById(
+    "addPieceSubmit"
+  );
+
+  if (!modal || !form) return;
+
+  editingProductId = productId;
+
+  const product = productId
+    ? getProduct(productId)
+    : null;
+
+  form.reset();
+
+  const imageInput =
+    form.elements.namedItem("image");
+
+  if (imageInput) {
+    imageInput.required = !product;
+    imageInput.value = "";
+  }
+
+  if (product) {
+    title.textContent = "Modifier la pièce";
+
+    if (submitButton) {
+      submitButton.textContent =
+        "Enregistrer les modifications";
+    }
+
+    form.elements.name.value =
+      product.name || "";
+
+    form.elements.brand.value =
+      product.brand || "";
+
+    form.elements.category.value =
+      product.category || "top";
+
+    form.elements.size.value =
+      product.size || "";
+
+    form.elements.price.value =
+      product.price ?? "";
+
+    form.elements.color.value =
+      safeColor(
+        product.colors?.[0],
+        "#222222"
+      );
+  } else {
+    title.textContent = "Ajouter une pièce";
+
+    if (submitButton) {
+      submitButton.textContent =
+        "Enregistrer dans mon dressing";
+    }
+  }
 
   modal.hidden = false;
+  document.body.classList.add("modal-open");
   document.body.style.overflow = "hidden";
 }
 
