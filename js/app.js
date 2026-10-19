@@ -2950,6 +2950,87 @@ timezone: "auto"
   );
 }
 
+function formatForecastDay(dateString, index) {
+  if (index === 0) {
+    return "Aujourd'hui";
+  }
+
+  const date = new Date(
+    `${dateString}T12:00:00`
+  );
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    weekday: "short",
+    day: "numeric"
+  }).format(date);
+}
+
+function renderWeatherForecast(forecast = []) {
+  if (!forecast.length) {
+    return "";
+  }
+
+  return `
+    <div class="weather-forecast">
+      <div class="weather-forecast-header">
+        <div>
+          <span class="eyebrow">
+            Prévisions
+          </span>
+
+          <strong>
+            Les 5 prochains jours
+          </strong>
+        </div>
+
+        <small>
+          Appuie sur une journée pour générer une tenue
+        </small>
+      </div>
+
+      <div class="weather-forecast-grid">
+        ${forecast.map((day, index) => {
+          return `
+            <button
+              class="forecast-day ${
+                index === 0 ? "is-today" : ""
+              }"
+              type="button"
+              data-action="generate-weather-outfit"
+              data-forecast-index="${index}"
+            >
+              <span class="forecast-day-name">
+                ${escapeHTML(
+                  formatForecastDay(day.date, index)
+                )}
+              </span>
+
+              <span class="forecast-day-icon">
+                ${getWeatherIcon(
+                  day.weatherCode,
+                  1
+                )}
+              </span>
+
+              <span class="forecast-day-temperatures">
+                ${Math.round(day.temperatureMax)}°
+                /
+                ${Math.round(day.temperatureMin)}°
+              </span>
+
+              <span class="forecast-day-rain">
+                Pluie ${Math.round(
+                  day.precipitationProbability
+                )}%
+              </span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function renderWeatherPanel() {
   const panel =
     document.getElementById("weatherPanel");
