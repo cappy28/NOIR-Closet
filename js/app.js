@@ -988,6 +988,22 @@ function renderProductDetail() {
       : "♡ Ajouter aux favoris"
   }
 </button>
+<button
+  class="button-secondary laundry-detail-button ${
+    isProductInLaundry(product.id)
+      ? "is-laundry"
+      : ""
+  }"
+  type="button"
+  data-action="toggle-laundry"
+  data-product-id="${escapeHTML(product.id)}"
+>
+  ${
+    isProductInLaundry(product.id)
+      ? "Remettre propre"
+      : "Mettre au sale"
+  }
+</button>
 
   <button
     class="button-secondary"
