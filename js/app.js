@@ -53,12 +53,20 @@ const state = {
   productId: null,
   search: "",
   category: "all",
-  outfit: {
+    outfit: {
     top: "004",
     bottom: "008",
     jacket: "009",
     shoes: "007",
     accessory: "016"
+  },
+
+  lockedOutfitSlots: {
+    top: false,
+    bottom: false,
+    jacket: false,
+    shoes: false,
+    accessory: false
   }
 };
 
