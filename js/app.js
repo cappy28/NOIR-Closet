@@ -4,6 +4,8 @@ const app = document.getElementById("app");
 const savedLooksKey = "noir-closet-saved-looks";
 const customProductsKey =
   "noir-closet-custom-products";
+const favoritesKey =
+  "noir-closet-favorite-products";
 const editedProductsKey =
   "noir-closet-edited-products";
 const deletedProductsKey =
@@ -66,6 +68,8 @@ const removeBgWorkerUrl =
 let savedLooks = loadSavedLooks();
 let searchFrame = 0;
 let editingProductId = null;
+let favoriteProductIds =
+  loadFavoriteProductIds();
 
 function loadSavedLooks() {
   try {
