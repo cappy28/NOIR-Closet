@@ -2546,6 +2546,33 @@ function handleClick(event) {
       openAddPieceModal();
       return;
     }
+    
+if (action === "toggle-outfit-lock") {
+  const slot =
+    actionTarget.dataset.outfitSlot;
+
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      state.lockedOutfitSlots,
+      slot
+    )
+  ) {
+    return;
+  }
+
+  state.lockedOutfitSlots[slot] =
+    !state.lockedOutfitSlots[slot];
+
+  renderOutfitLab();
+
+  showToast(
+    state.lockedOutfitSlots[slot]
+      ? "Pièce verrouillée."
+      : "Pièce déverrouillée."
+  );
+
+  return;
+}
 
     if (action === "random-outfit") {
       generateRandomOutfit();
