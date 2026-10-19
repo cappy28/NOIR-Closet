@@ -1612,25 +1612,6 @@ function chooseSmartProduct(
   return bestProducts[randomIndex].product;
 }
 
-function generateRandomOutfit() {
-  outfitSlots.forEach(slot => {
-    const available =
-      getAvailableForSlot(slot);
-
-    if (!available.length) return;
-
-    const randomIndex = Math.floor(
-      Math.random() * available.length
-    );
-
-    state.outfit[slot.key] =
-      available[randomIndex].id;
-  });
-
-  renderOutfitLab();
-  showToast("Nouveau look généré.");
-}
-
 function saveCurrentOutfit() {
   const items = getSelectedOutfitProducts()
     .map(product => product.id);
