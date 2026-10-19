@@ -84,7 +84,8 @@ let laundryProductIds = [];
 const weatherState = {
   status: "idle",
   data: null,
-  error: ""
+  error: "",
+  selectedForecastIndex: null
 };
 
 function loadSavedLooks() {
