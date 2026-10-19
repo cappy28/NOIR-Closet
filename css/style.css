@@ -3164,3 +3164,21 @@ body.modal-open {
     flex: 0 0 92px;
   }
 }
+
+.weather-svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  display: block;
+  color: currentColor;
+  flex: 0 0 auto;
+}
+
+.weather-icon .weather-svg {
+  width: 3.2rem;
+  height: 3.2rem;
+}
+
+.forecast-day-icon .weather-svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
