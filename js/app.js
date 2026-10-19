@@ -912,6 +912,15 @@ function renderProductDetail() {
   </button>
 
   <button
+    class="button-secondary"
+    type="button"
+    data-action="edit-product"
+    data-product-id="${escapeHTML(product.id)}"
+  >
+    Modifier
+  </button>
+
+  <button
     class="button-secondary button-danger"
     type="button"
     data-action="delete-product"
