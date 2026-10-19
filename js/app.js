@@ -1682,6 +1682,7 @@ function createAddPieceModal() {
 
             <button
               class="button-primary"
+              id="addPieceSubmit"
               type="submit"
             >
               Enregistrer dans mon dressing
