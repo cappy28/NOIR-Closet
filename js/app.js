@@ -2818,9 +2818,21 @@ async function loadWeather() {
             current:
               "temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day",
             hourly:
-              "precipitation_probability",
-            forecast_days: "1",
-            timezone: "auto"
+  "precipitation_probability",
+
+daily: [
+  "temperature_2m_max",
+  "temperature_2m_min",
+  "apparent_temperature_max",
+  "apparent_temperature_min",
+  "precipitation_probability_max",
+  "precipitation_sum",
+  "weather_code",
+  "wind_speed_10m_max"
+].join(","),
+
+forecast_days: "5",
+timezone: "auto"
           }).toString();
 
         const response = await fetch(weatherUrl);
