@@ -1164,6 +1164,9 @@ function renderOutfitControls() {
       const available =
         getAvailableForSlot(slot);
 
+      const isLocked =
+        state.lockedOutfitSlots[slot.key] === true;
+
       const options = available
         .map(product => {
           const selected =
@@ -1186,14 +1189,29 @@ function renderOutfitControls() {
 
       return `
         <div class="outfit-field">
-          <label for="outfit-${slot.key}">
-            ${escapeHTML(slot.label)}
-          </label>
+          <div class="outfit-field-header">
+            <label for="outfit-${escapeHTML(slot.key)}">
+              ${escapeHTML(slot.label)}
+            </label>
+
+            <button
+              class="outfit-lock-button ${
+                isLocked ? "is-locked" : ""
+              }"
+              type="button"
+              data-action="toggle-outfit-lock"
+              data-outfit-slot="${escapeHTML(slot.key)}"
+              aria-pressed="${isLocked}"
+            >
+              ${isLocked ? "VERROUILLÉ" : "VERROUILLER"}
+            </button>
+          </div>
 
           <select
-            id="outfit-${slot.key}"
+            id="outfit-${escapeHTML(slot.key)}"
             class="outfit-select"
             data-outfit-slot="${escapeHTML(slot.key)}"
+            ${isLocked ? "disabled" : ""}
           >
             <option value="">
               Aucun élément
