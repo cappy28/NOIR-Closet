@@ -1547,12 +1547,16 @@ function openAddPieceModal(productId = null) {
 }
 
 function closeAddPieceModal() {
-  const modal = document.getElementById("addPieceModal");
+  const modal = document.getElementById(
+    "addPieceModal"
+  );
 
   if (!modal) return;
 
   modal.hidden = true;
+  document.body.classList.remove("modal-open");
   document.body.style.overflow = "";
+  editingProductId = null;
 }
 
 function createAddPieceModal() {
