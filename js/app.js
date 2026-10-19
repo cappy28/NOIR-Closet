@@ -685,6 +685,10 @@ function renderCloset() {
           <option value="all">
             Toutes les catégories
           </option>
+         
+          <option value="favorites">
+            Favoris
+          </option>
 
           <option value="top">Hauts</option>
           <option value="bottom">Bas</option>
