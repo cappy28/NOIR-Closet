@@ -1741,10 +1741,115 @@ function styleCompatibility(firstProduct, secondProduct) {
   );
 }
 
+function getWeatherWarmthTarget(plan, category) {
+  const minimum = Number(
+    plan?.minimum ?? 20
+  );
+
+  const maximum = Number(
+    plan?.maximum ?? minimum
+  );
+
+  if (category === "jacket") {
+    if (minimum <= 5) return 5;
+    if (minimum <= 12) return 4;
+    if (minimum <= 18 || plan?.rainy) return 3;
+
+    return 2;
+  }
+
+  if (category === "top") {
+    if (minimum <= 5) return 5;
+    if (minimum <= 12) return 4;
+    if (minimum <= 18) return 3;
+    if (maximum >= 27) return 1;
+
+    return 2;
+  }
+
+  if (category === "bottom") {
+    if (minimum <= 5) return 3;
+    if (maximum >= 27) return 1;
+
+    return 2;
+  }
+
+  if (category === "accessory") {
+    if (minimum <= 5) return 5;
+    if (minimum <= 12) return 4;
+
+    return 2;
+  }
+
+  return 2;
+}
+
+function getWeatherCompatibility(
+  candidate,
+  plan
+) {
+  if (!plan) {
+    return 0.5;
+  }
+
+  const warmth = Number(
+    candidate.warmth ?? 2
+  );
+
+  const targetWarmth =
+    getWeatherWarmthTarget(
+      plan,
+      candidate.category
+    );
+
+  const warmthScore = Math.max(
+    0,
+    1 -
+      Math.abs(warmth - targetWarmth) / 4
+  );
+
+  let score = warmthScore;
+
+  if (
+    plan.rainy &&
+    candidate.category === "jacket"
+  ) {
+    if (candidate.rainProtection === true) {
+      score = Math.min(
+        1,
+        score + 0.35
+      );
+    } else {
+      score *= 0.45;
+    }
+  }
+
+  if (
+    plan.snowy &&
+    candidate.category === "jacket"
+  ) {
+    if (warmth >= 4) {
+      score = Math.min(
+        1,
+        score + 0.15
+      );
+    } else {
+      score *= 0.5;
+    }
+  }
+
+  return Math.max(
+    0,
+    Math.min(1, score)
+  );
+}
+
 function productCompatibility(
   candidate,
-  selectedProducts
+  selectedProducts,
+  weatherPlan = null
 ) {
+
   if (!selectedProducts.length) {
     return 0.5;
   }
@@ -1784,11 +1889,25 @@ function productCompatibility(
     );
   });
 
-  return (
+    const outfitScore =
     scores.reduce(
       (total, score) => total + score,
       0
-    ) / scores.length
+    ) / scores.length;
+
+  if (!weatherPlan) {
+    return outfitScore;
+  }
+
+  const weatherScore =
+    getWeatherCompatibility(
+      candidate,
+      weatherPlan
+    );
+
+  return (
+    outfitScore * 0.62 +
+    weatherScore * 0.38
   );
 }
 
