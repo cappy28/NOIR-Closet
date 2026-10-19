@@ -743,8 +743,15 @@ function renderClosetGrid() {
       searchableText.includes(search);
 
     const matchesCategory =
-      state.category === "all" ||
-      product.category === state.category;
+  state.category === "all" ||
+  (
+    state.category === "favorites" &&
+    isFavorite(product.id)
+  ) ||
+  (
+    state.category !== "favorites" &&
+    product.category === state.category
+  );
 
     return matchesSearch && matchesCategory;
   });
