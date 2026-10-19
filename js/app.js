@@ -65,6 +65,7 @@ const removeBgWorkerUrl =
 
 let savedLooks = loadSavedLooks();
 let searchFrame = 0;
+let editingProductId = null;
 
 function loadSavedLooks() {
   try {
