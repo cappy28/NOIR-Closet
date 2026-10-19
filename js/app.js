@@ -219,11 +219,32 @@ function productMedia(product, extraClass = "") {
 }
 
 function productCard(product) {
+  const favorite = isFavorite(product.id);
+
   return `
     <article
       class="product-card"
       data-product-id="${escapeHTML(product.id)}"
     >
+      <button
+        class="favorite-toggle ${
+          favorite ? "is-favorite" : ""
+        }"
+        type="button"
+        data-action="toggle-favorite"
+        data-product-id="${escapeHTML(product.id)}"
+        aria-label="${
+          favorite
+            ? "Retirer des favoris"
+            : "Ajouter aux favoris"
+        }"
+        aria-pressed="${favorite}"
+      >
+        <span aria-hidden="true">
+          ${favorite ? "♥" : "♡"}
+        </span>
+      </button>
+
       ${productMedia(product)}
 
       <div class="product-content">
