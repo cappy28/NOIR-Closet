@@ -2909,7 +2909,7 @@ timezone: "auto"
             ) || 0,
           weatherCode: current.weather_code,
           windSpeed: current.wind_speed_10m,
-          isDay: current.is_day
+          isDay: current.is_day,
           forecast: buildWeatherForecast(result.daily)
         };
 
