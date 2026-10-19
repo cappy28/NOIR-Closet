@@ -580,7 +580,8 @@ function renderOverview() {
           </button>
         </div>
       </div>
-
+      
+      <div id="weatherPanel"></div>
       <div class="stat-strip">
         <div class="stat-card">
           <div class="stat-label">
@@ -655,7 +656,9 @@ function renderOverview() {
         </div>
       </div>
     </section>
-  `;
+    `;
+
+  renderWeatherPanel();
 }
 
 function renderCloset() {
