@@ -2549,6 +2549,14 @@ async function handleAddPieceSubmit(event) {
     formData.get("color") || "#222222"
   );
 
+    const warmth = Number(
+    formData.get("warmth") || 2
+  );
+
+  const rainProtection =
+    form.elements.rainProtection?.checked === true
+    ;
+
   error.hidden = true;
   error.textContent = "";
 
