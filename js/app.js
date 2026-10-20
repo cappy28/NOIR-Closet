@@ -2626,7 +2626,10 @@ async function handleAddPieceSubmit(event) {
           size,
           price,
           image,
-          colors: [color]
+          colors: [color],
+          warmth,
+          rainProtection
+
         }
       : {
           id: `custom-${Date.now()}`,
