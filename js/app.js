@@ -2311,6 +2311,35 @@ function createAddPieceModal() {
                   required
                 />
               </label>
+
+              <label class="add-piece-field">
+  <span>Niveau de chaleur</span>
+
+  <select name="warmth" required>
+    <option value="1">1 — Très léger</option>
+    <option value="2" selected>2 — Léger</option>
+    <option value="3">3 — Intermédiaire</option>
+    <option value="4">4 — Chaud</option>
+    <option value="5">5 — Très chaud</option>
+  </select>
+</label>
+
+<label
+  class="add-piece-field"
+  style="
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  "
+>
+  <input
+    type="checkbox"
+    name="rainProtection"
+  />
+
+  <span>Résiste à la pluie</span>
+</label>
             </div>
 
             <label class="add-piece-field">
