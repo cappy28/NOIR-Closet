@@ -2591,6 +2591,18 @@ async function handleAddPieceSubmit(event) {
     return;
   }
 
+    if (
+    !Number.isInteger(warmth) ||
+    warmth < 1 ||
+    warmth > 5
+  ) {
+    error.textContent =
+      "Le niveau de chaleur doit être compris entre 1 et 5.";
+    error.hidden = false;
+    return;
+   
+    }
+
   try {
     let image = currentProduct?.image || "";
 
