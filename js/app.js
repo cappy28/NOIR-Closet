@@ -2799,7 +2799,10 @@ function saveEditedProduct(product) {
     originalPrice: product.originalPrice ?? null,
     category: product.category,
     image: product.image,
-    colors: product.colors || [],
+        colors: product.colors || [],
+    warmth: product.warmth ?? 2,
+    rainProtection:
+      product.rainProtection === true,
     styles: product.styles || [],
     includeInOutfits:
       product.includeInOutfits !== false,
