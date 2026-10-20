@@ -2641,6 +2641,8 @@ async function handleAddPieceSubmit(event) {
           originalPrice: null,
           image,
           colors: [color],
+          warmth,
+          rainProtection,
           styles: ["personnel"],
           includeInOutfits: true,
           quantity: 1,
