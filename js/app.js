@@ -2132,6 +2132,24 @@ function openAddPieceModal(productId = null) {
 
   form.reset();
 
+    const warmthInput =
+    form.elements.namedItem("warmth");
+
+  const rainProtectionInput =
+    form.elements.namedItem("rainProtection");
+
+  if (warmthInput) {
+    warmthInput.value = String(
+      product?.warmth ?? 2
+    );
+  }
+
+  if (rainProtectionInput) {
+    rainProtectionInput.checked =
+      product?.rainProtection === true;
+
+  }
+
   const imageInput =
     form.elements.namedItem("image");
 
