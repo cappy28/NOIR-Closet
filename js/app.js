@@ -727,6 +727,10 @@ function renderCloset() {
             Favoris
           </option>
 
+          <option value="laundry">
+            À la machine à laver
+          </option>
+
           <option value="top">Hauts</option>
           <option value="bottom">Bas</option>
           <option value="jacket">Vestes</option>
