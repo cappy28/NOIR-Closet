@@ -4666,3 +4666,67 @@ body {
     width: 100%;
   }
       }
+
+/* =========================================================
+   NØIR — Catalogue : centrage et visibilité
+========================================================= */
+
+.product-card .product-media {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 14px !important;
+  overflow: hidden;
+}
+
+.product-card .product-media img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: auto !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none;
+}
+
+/* Fond clair pour les vêtements noirs */
+
+.product-card .product-media.is-dark {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(255, 255, 255, 0.96),
+      rgba(213, 217, 221, 0.9) 38%,
+      transparent 72%
+    ),
+    linear-gradient(
+      145deg,
+      #f1f3f4,
+      #9da3a8 52%,
+      #34383c
+    );
+}
+
+/* Halo léger autour des vêtements sombres */
+
+.product-card .product-media.is-dark img {
+  filter:
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 16px 20px rgba(0, 0, 0, 0.42))
+    contrast(1.18);
+}
+
+.product-card .product-media.is-dark::after {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 760px) {
+  .product-card .product-media {
+    min-height: 175px;
+    padding: 10px !importan
+      t;
+  }
+      }
