@@ -3182,3 +3182,286 @@ body.modal-open {
   width: 1.9rem;
   height: 1.9rem;
 }
+
+/* =========================================================
+   NØIR — Premium motion system
+========================================================= */
+
+@keyframes noirFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes noirScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes noirChromeShine {
+  0% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 0.35;
+  }
+
+  70% {
+    opacity: 0.12;
+  }
+
+  100% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+}
+
+@keyframes noirSoftPulse {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Apparition des pages */
+
+.screen.active {
+  animation: noirFadeUp 0.55s ease both;
+}
+
+.panel,
+.weather-card,
+.outfit-stage,
+.look-card {
+  animation: noirScaleIn 0.5s ease both;
+}
+
+/* Cartes vêtements */
+
+.product-card,
+.outfit-piece {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease;
+}
+
+.product-card:hover,
+.outfit-piece:hover {
+  transform: translateY(-7px);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.38),
+    0 0 26px rgba(255, 255, 255, 0.05);
+}
+
+.product-media {
+  overflow: hidden;
+}
+
+.product-media img {
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s ease;
+}
+
+.product-card:hover .product-media img,
+.outfit-piece:hover .product-media img {
+  transform: scale(1.045);
+  filter: brightness(1.06) contrast(1.04);
+}
+
+/* Boutons */
+
+.button-primary,
+.button-secondary,
+.link-button,
+.detail-back,
+.favorite-toggle,
+.laundry-toggle,
+.outfit-lock-button,
+.forecast-day {
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.button-primary,
+.button-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-primary::after,
+.button-secondary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  pointer-events: none;
+  transform: translateX(-140%) skewX(-18deg);
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.28),
+    transparent
+  );
+}
+
+.button-primary:hover::after,
+.button-secondary:hover::after {
+  animation: noirChromeShine 0.75s ease;
+}
+
+.button-primary:hover,
+.button-secondary:hover,
+.link-button:hover {
+  transform: translateY(-2px);
+}
+
+.button-primary:active,
+.button-secondary:active,
+.link-button:active,
+.forecast-day:active {
+  transform: scale(0.96);
+}
+
+/* Navigation */
+
+.nav-item {
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.nav-item:hover {
+  transform: translateX(5px);
+}
+
+.nav-item.active {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 24px rgba(255, 255, 255, 0.06);
+}
+
+/* Favoris et état du linge */
+
+.favorite-toggle:hover {
+  transform: scale(1.16) rotate(-5deg);
+}
+
+.favorite-toggle.is-favorite {
+  animation: noirSoftPulse 1.8s ease-in-out infinite;
+}
+
+.laundry-toggle:hover {
+  transform: translateY(-2px);
+}
+
+/* Météo */
+
+.weather-card {
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.weather-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(255, 255, 255, 0.04);
+}
+
+.weather-svg {
+  transition:
+    transform 0.35s ease,
+    filter 0.35s ease;
+}
+
+.weather-card:hover .weather-svg {
+  transform: scale(1.1) rotate(-4deg);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+}
+
+.forecast-day:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Outfit Lab */
+
+.outfit-stage {
+  transition:
+    background 0.6s ease,
+    box-shadow 0.45s ease;
+}
+
+.outfit-stage:hover {
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.38),
+    0 0 35px rgba(255, 255, 255, 0.05);
+}
+
+.outfit-piece {
+  animation: noirFadeUp 0.55s ease both;
+}
+
+.outfit-piece:nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.outfit-piece:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.outfit-piece:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+.outfit-piece:nth-child(5) {
+  animation-delay: 0.24s;
+}
+
+/* Respect des préférences utilisateur */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+  }
+  
