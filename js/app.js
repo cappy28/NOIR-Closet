@@ -242,7 +242,9 @@ function productCard(product) {
 
   return `
     <article
-      class="product-card"
+      class="product-card ${
+  inLaundry ? "is-laundry" : ""
+}"
       data-product-id="${escapeHTML(product.id)}"
     >
       <button
