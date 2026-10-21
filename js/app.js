@@ -1114,7 +1114,7 @@ function normalizeOutfitSelection() {
   current.includeInOutfits !== false &&
   !isProductInLaundry(current.id);
 
-    if (!valid) {
+        if (!valid && state.outfit[slot.key]) {
       state.outfit[slot.key] =
         available[0]?.id || "";
     }
