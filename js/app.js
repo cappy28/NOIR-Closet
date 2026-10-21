@@ -2311,20 +2311,96 @@ function createAddPieceModal() {
               />
             </label>
 
-            <label class="add-piece-field">
-              <span>Catégorie</span>
+            <div class="add-piece-field">
+  <span>Catégorie</span>
 
-              <select name="category" required>
-                <option value="top">Haut</option>
-                <option value="bottom">Bas</option>
-                <option value="jacket">Veste</option>
-                <option value="shoes">Chaussures</option>
-                <option value="accessory">Accessoire</option>
-                <option value="underwear">
-                  Sous-vêtement
-                </option>
-              </select>
-            </label>
+  <div
+    class="custom-select"
+    data-custom-select
+  >
+    <input
+      type="hidden"
+      name="category"
+      value="top"
+    />
+
+    <button
+      type="button"
+      class="custom-select-trigger"
+      data-custom-select-trigger
+    >
+      <span data-selected-label>
+        Haut
+      </span>
+
+      <span class="custom-select-chevron">
+       ⌄
+      </span>
+    </button>
+
+    <div class="custom-select-menu">
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="top"
+        data-label="Haut"
+      >
+        Haut
+      </button>
+
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="bottom"
+        data-label="Bas"
+      >
+        Bas
+      </button>
+
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="jacket"
+        data-label="Veste"
+      >
+        Veste
+      </button>
+
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="shoes"
+        data-label="Chaussures"
+      >
+        Chaussures
+      </button>
+
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="accessory"
+        data-label="Accessoire"
+      >
+        Accessoire
+      </button>
+
+      <button
+        type="button"
+        class="custom-select-option"
+        data-select-option
+        data-value="underwear"
+        data-label="Sous-vêtement"
+      >
+        Sous-vêtement
+      </button>
+    </div>
+  </div>
+</div>
 
             <div class="add-piece-row">
               <label class="add-piece-field">
