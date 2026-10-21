@@ -3736,3 +3736,328 @@ body.modal-open {
   border-color: rgba(255, 180, 90, 0.4);
   color: #ffd3a1;
 }
+
+/* =========================================================
+   NØIR CLOSET — Premium Chrome Home
+========================================================= */
+
+:root {
+  --noir-bg: #050505;
+  --noir-panel: rgba(255, 255, 255, 0.055);
+  --noir-border: rgba(255, 255, 255, 0.16);
+  --noir-white: #f5f5f5;
+  --noir-muted: #969696;
+  --noir-chrome-light: #ffffff;
+  --noir-chrome-mid: #aeb3b8;
+  --noir-chrome-dark: #383b3f;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(255, 255, 255, 0.055),
+      transparent 30%
+    ),
+    #050505;
+}
+
+.app-shell {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.018),
+      transparent 35%
+    ),
+    #050505;
+}
+
+/* Barre supérieure */
+
+.topbar {
+  background: rgba(5, 5, 5, 0.58);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+/* Hero principal */
+
+.overview-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 440px;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(28px, 6vw, 72px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  background:
+    radial-gradient(
+      circle at 78% 28%,
+      rgba(255, 255, 255, 0.23),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 87% 74%,
+      rgba(153, 161, 170, 0.2),
+      transparent 27%
+    ),
+    linear-gradient(
+      135deg,
+      #080808 0%,
+      #25282b 38%,
+      #090909 67%,
+      #303337 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 28px 80px rgba(0, 0, 0, 0.38);
+}
+
+.overview-hero::before {
+  content: "NØIR";
+  position: absolute;
+  z-index: -1;
+  right: -2%;
+  bottom: -16%;
+  color: transparent;
+  font-size: clamp(110px, 22vw, 280px);
+  font-weight: 800;
+  letter-spacing: -0.12em;
+  line-height: 0.8;
+  opacity: 0.32;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45);
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.overview-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -70%;
+  background: linear-gradient(
+    105deg,
+    transparent 43%,
+    rgba(255, 255, 255, 0.16) 49%,
+    transparent 55%
+  );
+  transform: translateX(-35%) rotate(12deg);
+  animation: noirHeroSweep 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.hero-title {
+  margin: 16px 0 22px;
+  color: var(--noir-white);
+  font-size: clamp(48px, 8vw, 104px);
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.92;
+  text-shadow: 0 8px 35px rgba(0, 0, 0, 0.42);
+}
+
+.hero-title em {
+  display: inline-block;
+  color: transparent;
+  font-style: normal;
+  background:
+    linear-gradient(
+      105deg,
+      #ffffff 0%,
+      #858a8f 25%,
+      #ffffff 47%,
+      #555a60 70%,
+      #f8f8f8 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 220% auto;
+  animation: noirChromeText 7s linear infinite;
+}
+
+.hero-copy {
+  max-width: 500px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  color: rgba(255, 255, 255, 0.58);
+  letter-spacing: 0.16em;
+}
+
+/* Bouton chrome principal */
+
+.button-primary {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #080808;
+  background:
+    linear-gradient(
+      115deg,
+      #ffffff 0%,
+      #9da2a7 38%,
+      #ffffff 58%,
+      #696e73 100%
+    );
+  background-size: 220% auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 28px rgba(0, 0, 0, 0.3);
+  animation: noirChromeButton 6s linear infinite;
+}
+
+.button-primary:hover {
+  color: #000000;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 14px 35px rgba(0, 0, 0, 0.42),
+    0 0 22px rgba(255, 255, 255, 0.16);
+}
+
+/* Statistiques */
+
+.stat-strip {
+  gap: 14px;
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--noir-border);
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.105),
+      rgba(255, 255, 255, 0.025)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 14px 35px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.08),
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.stat-card:hover::after {
+  opacity: 1;
+}
+
+.stat-value {
+  color: transparent;
+  background: linear-gradient(
+    110deg,
+    #ffffff,
+    #8e9499,
+    #ffffff
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Panels */
+
+.panel,
+.feature-panel {
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.025)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 55px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation chrome */
+
+@keyframes noirHeroSweep {
+  0%,
+  50% {
+    transform: translateX(-42%) rotate(12deg);
+    opacity: 0;
+  }
+
+  65% {
+    opacity: 1;
+  }
+
+  85%,
+  100% {
+    transform: translateX(42%) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+@keyframes noirChromeText {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 220% center;
+  }
+}
+
+@keyframes noirChromeButton {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 220% center;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 760px) {
+  .overview-hero {
+    min-height: 480px;
+    padding: 26px 20px;
+    border-radius: 24px;
+  }
+
+  .overview-hero::before {
+    right: -10%;
+    bottom: 2%;
+    font-size: 125px;
+  }
+
+  .hero-title {
+    font-size: clamp(46px, 14vw, 76px);
+  }
+
+  .hero-copy {
+    font-size: 14px;
+  }
+
+  .button-primary {
+    min-height: 48px;
+  }
+  }
+    
