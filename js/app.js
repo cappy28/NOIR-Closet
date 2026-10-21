@@ -268,7 +268,17 @@ function productCard(product) {
 
       ${productMedia(product)}
 
-      <div class="product-content">
+${
+  inLaundry
+    ? `
+      <div class="laundry-badge">
+        À LA MACHINE À LAVER
+      </div>
+    `
+    : ""
+}
+
+<div class="product-content">
         <div class="product-name">
           ${escapeHTML(product.name)}
         </div>
