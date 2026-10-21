@@ -790,7 +790,13 @@ function renderClosetGrid() {
     isFavorite(product.id)
   ) ||
   (
-    state.category !== "favorites" &&
+    state.category === "laundry" &&
+    isProductInLaundry(product.id)
+  ) ||
+  (
+    !["favorites", "laundry"].includes(
+      state.category
+    ) &&
     product.category === state.category
   );
 
